@@ -26,7 +26,7 @@ CREDENTIALS_PATH = None
 # 预约规则配置
 ########################
 # 预约本市出货量最大的门店
-MAX_ENABLED = True
+MAX_ENABLED = False
 # 预约你的位置附近门店
-DISTANCE_ENABLED = False
+DISTANCE_ENABLED = True
 ########################

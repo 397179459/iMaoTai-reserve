@@ -12,7 +12,7 @@ def get_credentials_path():
         return cf.CREDENTIALS_PATH
     else:
         home_path = os.getcwd()
-        path = os.path.join(home_path, 'myConfig', 'credentials')
+        path = os.path.join(home_path, 'myConfig', 'credentials.txt')
         # 尝试创建目录
         try:
             os.mkdir(os.path.join(home_path, 'myConfig'))

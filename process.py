@@ -15,7 +15,8 @@ AES_KEY = 'qbhajinldepmucsonaaaccgypwuvcjaa'
 AES_IV = '2018534749963515'
 SALT = '2af72f100c356273d46284f6fd1dfc08'
 
-AMAP_KEY = '9449339b6c4aee04d69481e6e6c84a84'
+# 这里用的高德api,需要自己去高德开发者平台申请自己的key
+AMAP_KEY = 'e50d8848df3080acf55b85fbfaff1bcc'
 
 CURRENT_TIME = str(int(time.time() * 1000))
 headers = {}
@@ -115,7 +116,7 @@ def get_location_count(province: str,
                        item_code: str,
                        p_c_map: dict,
                        source_data: dict,
-                       lat: str = '28.499562',
+                       lat: str = '29.83826',
                        lng: str = '102.182324'):
     day_time = int(time.mktime(datetime.date.today().timetuple())) * 1000
     session_id = headers['current_session_id']
