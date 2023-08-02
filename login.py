@@ -70,7 +70,7 @@ if __name__ == '__main__':
         config.set(mobile, 'userId', str(userId))
         config.set(mobile, 'lat', location.split(',')[1])
         config.set(mobile, 'lng', location.split(',')[0])
-        config.write(open(path, 'w+'))  # 保存数据
+        config.write(open(path, 'w+', encoding="utf-8"))  # 保存数据
         condition = input(f"是否继续添加账号[Y/N]:").lstrip().rstrip()
         condition = condition.lower()
         if condition == 'n':
