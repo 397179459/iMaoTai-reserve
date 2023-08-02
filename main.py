@@ -12,6 +12,7 @@ logging.basicConfig(level=logging.INFO,
                     stream=sys.stdout,
                     datefmt=DATE_FORMAT)
 
+print("startRun")
 # 获取当日session id
 process.get_current_session_id()
 
