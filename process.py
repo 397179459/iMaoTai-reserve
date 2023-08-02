@@ -102,12 +102,12 @@ def login(mobile: str, v_code: str):
 
 
 def get_current_session_id():
-    print("===============get_current_session_id")
+    # print("===============get_current_session_id")
     day_time = int(time.mktime(datetime.date.today().timetuple())) * 1000
     my_url = f"https://static.moutai519.com.cn/mt-backend/xhr/front/mall/index/session/get/{day_time}"
-    print(my_url)
+    # print(my_url)
     responses = requests.get(my_url)
-    print(responses.json())
+    # print(responses.json())
     if responses.status_code != 200:
         logging.warning(
             f'get_current_session_id : params : {day_time}, response code : {responses.status_code}, response body : {responses.text}')
@@ -221,7 +221,7 @@ def act_params(shop_id: str, item_id: str):
 def send_email(msg: str):
     if config.PUSH_TOKEN is None:
         return
-    title = 'imoutai预约失败'  # 改成你要的标题内容
+    title = 'imoutai预约成功'  # 改成你要的标题内容
     content = msg  # 改成你要的正文内容
     url = 'http://www.pushplus.plus/send'
     r = requests.get(url, params={'token': config.PUSH_TOKEN,
@@ -242,6 +242,7 @@ def reservation(params: dict, mobile: str):
         raise RuntimeError
     logging.info(
         f'预约 : mobile:{mobile} :  response code : {responses.status_code}, response body : {responses.text}')
+    # send_email(f'预约 : mobile:{mobile} :  response code : {responses.status_code}, response body : {responses.text}')
 
 
 def select_geo(i: str):

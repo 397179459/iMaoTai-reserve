@@ -21,6 +21,8 @@ if len(configs.sections()) == 0:
     logging.error("配置文件未找到配置")
     sys.exit(1)
 
+isSuccess = True
+
 for section in configs.sections():
     mobile = section
     province = configs.get(section, 'province')
@@ -55,5 +57,9 @@ for section in configs.sections():
             process.reservation(reservation_params, mobile)
             process.getUserEnergyAward(mobile)
     except BaseException as e:
+        isSuccess = False;
         print(e)
         logging.error(e)
+
+if isSuccess:
+    process.send_email("i茅台预约成功")
