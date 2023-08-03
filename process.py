@@ -240,8 +240,9 @@ def reservation(params: dict, mobile: str):
     if '您的实名信息未完善或未通过认证' in responses.text:
         send_email(f'[{mobile}],{responses.text}')
         raise RuntimeError
-    logging.info(
-        f'预约 : mobile:{mobile} :  response code : {responses.status_code}, response body : {responses.text}')
+    msg = f'预约 : mobile:{mobile} :  response code : {responses.status_code}, response body : {responses.text}'
+    logging.info(msg)
+    return msg
     # send_email(f'预约 : mobile:{mobile} :  response code : {responses.status_code}, response body : {responses.text}')
 
 

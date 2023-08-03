@@ -22,6 +22,7 @@ if len(configs.sections()) == 0:
     sys.exit(1)
 
 isSuccess = True
+successMsg = ""
 
 for section in configs.sections():
     mobile = section
@@ -54,12 +55,12 @@ for section in configs.sections():
             title = config.ITEM_MAP.get(item)
             logging.info(f'商品：{title}, 门店：{shop_info["name"]}')
             reservation_params = process.act_params(max_shop_id, item)
-            process.reservation(reservation_params, mobile)
+            successMsg = process.reservation(reservation_params, mobile) + "/n"
             process.getUserEnergyAward(mobile)
     except BaseException as e:
-        isSuccess = False;
+        isSuccess = False
         print(e)
         logging.error(e)
 
 if isSuccess:
-    process.send_email("i茅台预约成功")
+    process.send_email(successMsg)
