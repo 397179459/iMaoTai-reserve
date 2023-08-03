@@ -32,9 +32,8 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install pycryptodome
 #        pip uninstall crypto pycryptodome
-#        pip install pycryptodome requests
+        pip install pycryptodome requests
     - name: start run
       env:
         PUSHPLUS_KEY: ${{ secrets.PUSHPLUS_KEY }}
