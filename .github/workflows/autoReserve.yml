@@ -39,6 +39,7 @@ jobs:
         PUSHPLUS_KEY: ${{ secrets.PUSHPLUS_KEY }}
       run: |
         python main.py
+
 #        pip install flake8 pytest
 #        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 #    - name: Lint with flake8
