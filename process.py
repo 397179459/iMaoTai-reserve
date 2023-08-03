@@ -1,6 +1,7 @@
 import datetime
 import json
 import math
+import os
 import random
 import re
 import time
@@ -16,7 +17,7 @@ AES_IV = '2018534749963515'
 SALT = '2af72f100c356273d46284f6fd1dfc08'
 
 # 这里用的高德api,需要自己去高德开发者平台申请自己的key
-AMAP_KEY = 'e50d8848df3080acf55b85fbfaff1bcc'
+AMAP_KEY = os.environ.get("GAODE_KEY")
 
 CURRENT_TIME = str(int(time.time() * 1000))
 headers = {}

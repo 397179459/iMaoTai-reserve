@@ -15,6 +15,8 @@ pip3 install --no-cache-dir -r requirements.txt
 
 ### 2、(可选)修改config.py 
 ```python
+import os
+
 ITEM_MAP = {
     "10213": "53%vol 500ml贵州茅台酒（癸卯兔年）",
     "10214": "53%vol 375ml×2贵州茅台酒（癸卯兔年）",
@@ -26,12 +28,11 @@ ITEM_MAP = {
 ########################
 ITEM_CODES = ['10213', '10214']
 
-# 弃用掉了邮箱推送，很多人不会使用
 # push plus 微信推送,具体使用参考  https://www.pushplus.plus
 # 例如： PUSH_TOKEN = '123456'
 ########################
 # 不填不推送消息，一对一发送
-PUSH_TOKEN = '123456'
+PUSH_TOKEN = os.environ.get("PUSHPLUS_KEY")
 ########################
 
 # credentials 路径，例如：CREDENTIALS_PATH = /home/user/.imoutai/credentials
@@ -44,16 +45,17 @@ CREDENTIALS_PATH = None
 # 预约规则配置
 ########################
 # 预约本市出货量最大的门店
-MAX_ENABLED = True
+MAX_ENABLED = False
 # 预约你的位置附近门店
-DISTANCE_ENABLED = False
+DISTANCE_ENABLED = True
 ########################
+
 
 ```
 
 ### 3、按提示输入 预约位置、手机号、验证码 等，生成的token等 配置文件会保存在 $HOME/.imaotai/credentials, 很长时间不再需要登录。支持多账号
 ```shell
-mobian@mobian:~/app/imaotai$ python3 login.py
+python3 login.py
 
 请输入你的位置,例如[小区名称],为你预约本市门店商店: 军安家园
 0 : [地区:内蒙古自治区,位置:内蒙古自治区赤峰市红山区军安家园]
@@ -104,10 +106,4 @@ python3 main.py
 10,40,50 9 * * * root python3 /home/mobian/app/imaotai/main.py >> /var/log/imaotai.log
 ```
 ##### 感谢提供的文档：https://blog.csdn.net/weixin_47481826/article/details/128893239
-
-## Thank you to JetBrains for supporting open source projects：
-request for JetBrains OSS development license. Request ID=11072023/12114306
-<a href="https://jb.gg/OpenSourceSupport">
-  <img src="https://user-images.githubusercontent.com/8643542/160519107-199319dc-e1cf-4079-94b7-01b6b8d23aa6.png" align="left" height="100" width="100"  alt="JetBrains">
-</a>
 
