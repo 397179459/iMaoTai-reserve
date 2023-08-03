@@ -6,8 +6,8 @@ name: imaotai-action
 on:
   push:
     branches: [ "master" ]
-#    paths:
-#      - '.github/workflows/**'
+    paths:
+      - '.github/workflows/**'
   schedule:
     - cron: '4,15 0 * * *'
 
@@ -21,24 +21,23 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-#    runs-on: windows-latest
+    #    runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up Python 3.10
-      uses: actions/setup-python@v3
-      with:
-        python-version: "3.10"
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-#        pip uninstall crypto pycryptodome
-        pip install pycryptodome requests
-    - name: start run
-      env:
-        PUSHPLUS_KEY: ${{ secrets.PUSHPLUS_KEY }}
-      run: |
-        python main.py
+      - uses: actions/checkout@v3
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.10"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pycryptodome requests
+      - name: start run
+        env:
+          PUSHPLUS_KEY: ${{ secrets.PUSHPLUS_KEY }}
+        run: |
+          python main.py
 
 #        pip install flake8 pytest
 #        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
