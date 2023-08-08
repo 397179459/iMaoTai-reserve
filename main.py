@@ -53,9 +53,10 @@ for section in configs.sections():
                 continue
             shop_info = source_data.get(str(max_shop_id))
             title = config.ITEM_MAP.get(item)
-            logging.info(f'商品：{title}, 门店：{shop_info["name"]}')
+            shopInfo = f'商品:{title};门店:{shop_info["name"]}'
+            logging.info(shopInfo)
             reservation_params = process.act_params(max_shop_id, item)
-            successMsg = successMsg + process.reservation(reservation_params, mobile) + "\n"
+            successMsg = successMsg + process.reservation(reservation_params, mobile) + shopInfo + "\n"
             process.getUserEnergyAward(mobile)
     except BaseException as e:
         isSuccess = False
@@ -63,4 +64,5 @@ for section in configs.sections():
         logging.error(e)
 
 if isSuccess:
+    print('要推送的消息:' + "\n" + successMsg)
     process.send_email(successMsg)

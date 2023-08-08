@@ -222,7 +222,7 @@ def act_params(shop_id: str, item_id: str):
 def send_email(msg: str):
     if config.PUSH_TOKEN is None:
         return
-    title = 'imoutai预约成功'  # 改成你要的标题内容
+    title = 'i茅台预约'  # 改成你要的标题内容
     content = msg  # 改成你要的正文内容
     url = 'http://www.pushplus.plus/send'
     r = requests.get(url, params={'token': config.PUSH_TOKEN,
@@ -241,8 +241,10 @@ def reservation(params: dict, mobile: str):
     if '您的实名信息未完善或未通过认证' in responses.text:
         send_email(f'[{mobile}],{responses.text}')
         raise RuntimeError
-    msg = f'预约 : mobile:{mobile} :  response code : {responses.status_code}, response body : {responses.text}'
+    msg = f'预约:mobile:{mobile};response code:{responses.status_code};response body:{responses.text};'
     logging.info(msg)
+    if responses.status_code == 200:
+        msg = f'预约:mobile:{mobile};response code:{responses.status_code};'
     return msg
     # send_email(f'预约 : mobile:{mobile} :  response code : {responses.status_code}, response body : {responses.text}')
 
