@@ -7,7 +7,7 @@ ITEM_MAP = {
     "2478": "53%vol 500ml贵州茅台酒（珍品）"
 }
 
-# 需要预约的商品(默认只预约2个兔茅)
+# 需要预约的商品(默认只预约2个赚钱的茅子)
 ########################
 ITEM_CODES = ['10213', '10214']
 
@@ -15,17 +15,19 @@ ITEM_CODES = ['10213', '10214']
 # 例如： PUSH_TOKEN = '123456'
 ########################
 # 不填不推送消息，一对一发送
+# 为了安全，这里使用的环境配置。git里面请自行百度如何添加secrets。pycharm也可以自主添加。如果你实在不会，就直接用明文吧（O.o）
 PUSH_TOKEN = os.environ.get("PUSHPLUS_KEY")
 ########################
 
-# credentials 路径，例如：CREDENTIALS_PATH = /home/user/.imoutai/credentials
-# 不配置，使用默认路径，在宿主目录
-# 例如： CREDENTIALS_PATH = '/home/user/.imautai/credentials'
+# 个人用户 credentials 路径
+# 不配置，使用默认路径，在项目目录中;如果需要配置，你自己应该也会配置路径
+# 例如： CREDENTIALS_PATH = './myConfig/credentials'
 ########################
 CREDENTIALS_PATH = None
 ########################
 
 # 预约规则配置
+# 因为目前支持代提的还是少，所以还是建议默认预约最近的门店
 ########################
 # 预约本市出货量最大的门店
 MAX_ENABLED = False
