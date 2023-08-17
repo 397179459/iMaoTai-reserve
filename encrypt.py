@@ -37,6 +37,7 @@ class Encrypt:
         text = cipher.decrypt(content).decode('utf-8')
         return text.rstrip(self.coding)
 
+
 # if __name__ == '__main__':
 #     key = 'ONxYDyNaCoyTzsp83JoQ3YYuMPHxk3j7'
 #     iv = 'yNaCoyTzsp83JoQ3'

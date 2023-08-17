@@ -59,10 +59,9 @@ python3 main.py
 ## 请开发者喝咖啡
 - 欢迎使用支付宝或微信请我喝咖啡（O.o）
 
-![](resources/imgs/wxqr.png)
+<img src="resources/imgs/wxqr.png" width="400">
 
-![](resources/imgs/zfbqr.jpg)
-
+<img src="resources/imgs/zfbqr.jpg" width="400">
 
 ## 特别感谢
 技术思路：https://blog.csdn.net/weixin_47481826/article/details/128893239
