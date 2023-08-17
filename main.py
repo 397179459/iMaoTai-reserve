@@ -21,8 +21,8 @@ if len(configs.sections()) == 0:
     logging.error("配置文件未找到配置")
     sys.exit(1)
 
-isSuccess = True
-successMsg = ""
+s_title = '茅台预约成功'
+s_content = ""
 
 for section in configs.sections():
     mobile = section
@@ -56,13 +56,17 @@ for section in configs.sections():
             shopInfo = f'商品:{title};门店:{shop_info["name"]}'
             logging.info(shopInfo)
             reservation_params = process.act_params(max_shop_id, item)
-            successMsg = successMsg + process.reservation(reservation_params, mobile) + shopInfo + "\n"
+            # 核心预约步骤
+            r_success, r_content = process.reservation(reservation_params, mobile)
+            # 为了防止漏掉推送异常，所有只要有一个异常，标题就显示失败
+            if not r_success:
+                s_title = '！！失败！！茅台预约'
+            s_content = s_content + r_content + shopInfo + "\n"
+            # 领取小茅运和耐力值
             process.getUserEnergyAward(mobile)
     except BaseException as e:
-        isSuccess = False
         print(e)
         logging.error(e)
 
-if isSuccess:
-    print('要推送的消息:' + "\n" + successMsg)
-    process.send_email(successMsg)
+# 推送消息
+process.send_msg(s_title, s_content)

@@ -241,11 +241,10 @@ def act_params(shop_id: str, item_id: str):
     return params
 
 
-def send_email(msg: str):
+# 消息推送
+def send_msg(title, content):
     if config.PUSH_TOKEN is None:
         return
-    title = 'i茅台预约'  # 改成你要的标题内容
-    content = msg  # 改成你要的正文内容
     url = 'http://www.pushplus.plus/send'
     r = requests.get(url, params={'token': config.PUSH_TOKEN,
                                   'title': title,
@@ -253,23 +252,22 @@ def send_email(msg: str):
     logging.info(f'通知推送结果：{r.status_code, r.text}')
 
 
-# 执行预约
+# 核心代码，执行预约
 def reservation(params: dict, mobile: str):
     params.pop('userId')
     responses = requests.post("https://app.moutai519.com.cn/xhr/front/mall/reservation/add", json=params,
                               headers=headers)
-    if responses.status_code == 401:
-        send_email(f'[{mobile}],登录token失效，需要重新登录')
-        raise RuntimeError
-    if '您的实名信息未完善或未通过认证' in responses.text:
-        send_email(f'[{mobile}],{responses.text}')
-        raise RuntimeError
-    msg = f'预约:mobile:{mobile};response code:{responses.status_code};response body:{responses.text};'
-    logging.info(msg)
+    # if responses.status_code == 401:
+    #     send_msg('！！失败！！茅台预约', f'[{mobile}],登录token失效，需要重新登录')
+    #     raise RuntimeError
     if responses.status_code == 200:
-        msg = f'预约:mobile:{mobile};response code:{responses.status_code};'
-    return msg
-    # send_email(f'预约 : mobile:{mobile} :  response code : {responses.status_code}, response body : {responses.text}')
+        r_success = True
+    else:
+        r_success = False
+
+    msg = f'预约:{mobile};Code:{responses.status_code};Body:{responses.text};'
+    logging.info(msg)
+    return r_success, msg
 
 
 # 用高德api获取地图信息
