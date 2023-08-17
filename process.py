@@ -9,7 +9,7 @@ import config
 from encrypt import Encrypt
 import requests
 import hashlib
-
+from bs4 import BeautifulSoup
 import logging
 
 AES_KEY = 'qbhajinldepmucsonaaaccgypwuvcjaa'
@@ -21,9 +21,27 @@ AMAP_KEY = os.environ.get("GAODE_KEY")
 
 CURRENT_TIME = str(int(time.time() * 1000))
 headers = {}
-mt_version = "".join(re.findall('new__latest__version">(.*?)</p>',
-                                requests.get('https://apps.apple.com/cn/app/i%E8%8C%85%E5%8F%B0/id1600482450').text,
-                                re.S)).replace('版本 ', '')
+
+
+# 获取茅台APP的版本号，暂时没找到接口，采用爬虫曲线救国
+# 用bs获取指定的class更稳定，之前的正则可能需要经常改动
+def get_mt_version():
+    # apple商店 i茅台 url
+    apple_imaotai_url = "https://apps.apple.com/cn/app/i%E8%8C%85%E5%8F%B0/id1600482450"
+    response = requests.get(apple_imaotai_url)
+    # 用网页自带的编码反解码，防止中文乱码
+    response.encoding = response.apparent_encoding
+    html_text = response.text
+    soup = BeautifulSoup(html_text, "html.parser")
+    elements = soup.find_all(class_="whats-new__latest__version")
+    # 获取p标签内的文本内容
+    version_text = elements[0].text
+    # 这里先把没有直接替换“版本 ”，因为后面不知道空格会不会在，所以先替换文字，再去掉前后空格
+    latest_mt_version = version_text.replace("版本", "").strip()
+    return latest_mt_version
+
+
+mt_version = get_mt_version()
 
 header_context = f'''
 MT-Lat: 28.499562
@@ -51,6 +69,7 @@ userId: 2
 '''
 
 
+# 初始化请求头
 def init_headers(user_id: str = '1', token: str = '2', lat: str = '29.83826', lng: str = '119.74375'):
     for k in header_context.rstrip().lstrip().split("\n"):
         temp_l = k.split(': ')
@@ -74,9 +93,7 @@ def signature(data: dict):
     return md5
 
 
-print()
-
-
+# 获取登录手机验证码
 def get_vcode(mobile: str):
     params = {'mobile': mobile}
     md5 = signature(params)
@@ -88,6 +105,7 @@ def get_vcode(mobile: str):
             f'get v_code : params : {params}, response code : {responses.status_code}, response body : {responses.text}')
 
 
+# 执行登录操作
 def login(mobile: str, v_code: str):
     params = {'mobile': mobile, 'vCode': v_code, 'ydToken': '', 'ydLogId': ''}
     md5 = signature(params)
@@ -102,6 +120,7 @@ def login(mobile: str, v_code: str):
     return responses.json()['data']['token'], responses.json()['data']['userId']
 
 
+# 获取当日的session id
 def get_current_session_id():
     # print("===============get_current_session_id")
     day_time = int(time.mktime(datetime.date.today().timetuple())) * 1000
@@ -116,6 +135,7 @@ def get_current_session_id():
     dict.update(headers, {'current_session_id': str(current_session_id)})
 
 
+# 获取最近或者出货量最大的店铺
 def get_location_count(province: str,
                        city: str,
                        item_code: str,
@@ -138,6 +158,7 @@ def get_location_count(province: str,
         return distance_shop(city, item_code, p_c_map, province, shops, source_data, lat, lng)
 
 
+# 获取距离最近的店铺
 def distance_shop(city,
                   item_code,
                   p_c_map,
@@ -171,6 +192,7 @@ def distance_shop(city,
         return '0'
 
 
+# 获取出货量最大的店铺
 def max_shop(city, item_code, p_c_map, province, shops):
     max_count = 0
     max_shop_id = '0'
@@ -231,6 +253,7 @@ def send_email(msg: str):
     logging.info(f'通知推送结果：{r.status_code, r.text}')
 
 
+# 执行预约
 def reservation(params: dict, mobile: str):
     params.pop('userId')
     responses = requests.post("https://app.moutai519.com.cn/xhr/front/mall/reservation/add", json=params,
@@ -249,6 +272,7 @@ def reservation(params: dict, mobile: str):
     # send_email(f'预约 : mobile:{mobile} :  response code : {responses.status_code}, response body : {responses.text}')
 
 
+# 用高德api获取地图信息
 def select_geo(i: str):
     resp = requests.get(f"https://restapi.amap.com/v3/geocode/geo?key={AMAP_KEY}&output=json&address={i}")
     geocodes: list = resp.json()['geocodes']
@@ -290,6 +314,7 @@ def get_map(lat: str = '28.499562', lng: str = '102.182324'):
     return p_c_map, dict(r.json())
 
 
+# 领取耐力和小茅运
 def getUserEnergyAward(mobile: str):
     """
     领取耐力

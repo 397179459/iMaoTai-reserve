@@ -1,4 +1,3 @@
-#!/usr/bin/python3
 import logging
 import sys
 
@@ -12,10 +11,11 @@ logging.basicConfig(level=logging.INFO,
                     stream=sys.stdout,
                     datefmt=DATE_FORMAT)
 
-print("================== startRun")
-# 获取当日session id
+print("====== MainStartRun =======")
+
 process.get_current_session_id()
 
+# 校验配置文件是否存在
 configs = login.config
 if len(configs.sections()) == 0:
     logging.error("配置文件未找到配置")
@@ -48,7 +48,7 @@ for section in configs.sections():
                                                      source_data=source_data,
                                                      lat=lat,
                                                      lng=lng)
-            print(f'max shop id : {max_shop_id}')
+            # print(f'max shop id : {max_shop_id}')
             if max_shop_id == '0':
                 continue
             shop_info = source_data.get(str(max_shop_id))
