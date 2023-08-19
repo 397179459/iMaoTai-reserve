@@ -16,13 +16,6 @@ AES_KEY = 'qbhajinldepmucsonaaaccgypwuvcjaa'
 AES_IV = '2018534749963515'
 SALT = '2af72f100c356273d46284f6fd1dfc08'
 
-# 这里用的高德api,需要自己去高德开发者平台申请自己的key
-AMAP_KEY = os.environ.get("GAODE_KEY")
-# 增加校验高德api是否配置
-# if AMAP_KEY is None:
-    # logging.error("请自行配置高德地图的MapKey")
-    # raise ValueError
-
 CURRENT_TIME = str(int(time.time() * 1000))
 headers = {}
 
@@ -75,7 +68,7 @@ userId: 2
 
 # 初始化请求头
 def init_headers(user_id: str = '1', token: str = '2', lat: str = '29.83826', lng: str = '119.74375'):
-    for k in header_context.rstrip().lstrip().split("\n"):
+    for k in header_context.strip().split("\n"):
         temp_l = k.split(': ')
         dict.update(headers, {temp_l[0]: temp_l[1]})
     dict.update(headers, {"userId": user_id})
@@ -264,19 +257,27 @@ def reservation(params: dict, mobile: str):
     # if responses.status_code == 401:
     #     send_msg('！！失败！！茅台预约', f'[{mobile}],登录token失效，需要重新登录')
     #     raise RuntimeError
-    if responses.status_code == 200:
-        r_success = True
-    else:
-        r_success = False
 
     msg = f'预约:{mobile};Code:{responses.status_code};Body:{responses.text};'
     logging.info(msg)
+
+    # 如果是成功，推送消息简化；失败消息则全量推送
+    if responses.status_code == 200:
+        r_success = True
+        msg = f'手机:{mobile};'
+    else:
+        r_success = False
+
     return r_success, msg
 
 
 # 用高德api获取地图信息
 def select_geo(i: str):
-    resp = requests.get(f"https://restapi.amap.com/v3/geocode/geo?key={AMAP_KEY}&output=json&address={i}")
+    # 校验高德api是否配置
+    if config.AMAP_KEY is None:
+        logging.error("!!!!请配置config.py中AMAP_KEY(高德地图的MapKey)")
+        raise ValueError
+    resp = requests.get(f"https://restapi.amap.com/v3/geocode/geo?key={config.AMAP_KEY}&output=json&address={i}")
     geocodes: list = resp.json()['geocodes']
     return geocodes
 
