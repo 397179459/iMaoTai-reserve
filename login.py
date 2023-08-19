@@ -2,6 +2,7 @@ import configparser
 import os
 import config as cf
 import process
+import privateCrypt
 
 config = configparser.ConfigParser()  # 类实例化
 
@@ -48,6 +49,8 @@ def get_location():
 
 if __name__ == '__main__':
 
+    aes_key = privateCrypt.get_aes_key()
+
     while 1:
         process.init_headers()
         location_select: dict = get_location()
@@ -59,16 +62,30 @@ if __name__ == '__main__':
         process.get_vcode(mobile)
         code = input(f"输入 [{mobile}] 验证码[1234]:").strip()
         token, userId = process.login(mobile, code)
-        if mobile not in sections:
-            config.add_section(mobile)  # 首先添加一个新的section
 
-        config.set(mobile, 'province', str(province))
-        config.set(mobile, 'city', str(city))
-        config.set(mobile, 'token', str(token))
-        config.set(mobile, 'userId', str(userId))
-        config.set(mobile, 'lat', location.split(',')[1])
-        config.set(mobile, 'lng', location.split(',')[0])
+        endDate = input(f"输入 [{mobile}] 截止日期(必须是YYYYMMDD,20230819)，如果不设置截止，请输入9：").strip()
+
+        # 为了增加辨识度，这里做了隐私处理，不参与任何业务逻辑
+        hide_mobile = mobile.replace(mobile[3:7], '****')
+        # 因为加密了手机号和Userid，所以token就不做加密了
+        encrypt_mobile = privateCrypt.encrypt_aes_ebc(mobile, aes_key)
+        encrypt_userid = privateCrypt.encrypt_aes_ebc(str(userId), aes_key)
+
+        if encrypt_mobile not in sections:
+            config.add_section(encrypt_mobile)  # 首先添加一个新的section
+
+        config.set(encrypt_mobile, 'hidemobile', hide_mobile)
+        config.set(encrypt_mobile, 'enddate', endDate)
+        config.set(encrypt_mobile, 'userid', encrypt_userid)
+        config.set(encrypt_mobile, 'province', str(province))
+        config.set(encrypt_mobile, 'city', str(city))
+        config.set(encrypt_mobile, 'token', str(token))
+
+        config.set(encrypt_mobile, 'lat', location.split(',')[1])
+        config.set(encrypt_mobile, 'lng', location.split(',')[0])
+
         config.write(open(path, 'w+', encoding="utf-8"))  # 保存数据
+
         condition = input(f"是否继续添加账号[y/n]:").strip()
 
         if condition.lower() == 'n':
