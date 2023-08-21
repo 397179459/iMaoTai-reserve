@@ -12,12 +12,11 @@ def get_credentials_path():
         return cf.CREDENTIALS_PATH
     else:
         home_path = os.getcwd()
-        config_path = os.path.join(home_path, 'myConfig', 'credentials')
-        if os.path.exists(config_path):
-            return config_path
-        else:
-            os.mkdir(os.path.join(home_path, 'myConfig'))
-            return config_path
+        config_parent_path = os.path.join(home_path, 'myConfig')
+        config_path = os.path.join(config_parent_path, 'credentials')
+        if not os.path.exists(config_parent_path):
+            os.mkdir(config_parent_path)
+        return config_path
 
 
 path = get_credentials_path()
