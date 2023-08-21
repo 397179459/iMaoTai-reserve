@@ -28,7 +28,8 @@ pip3 install --no-cache-dir -r requirements.txt
 
 
 ### 3、按提示输入 预约位置、手机号、验证码 等，生成的token等。很长时间不再需要登录。支持多账号，支持加密。
-- 先去配置环境变量 `GAODE_KEY`,再运行`login.py`.
+1. 第一次使用先清空`./myConfig/credentials`中的信息，或者直接删除`credentials`文件也可以
+2. 再去配置环境变量 `GAODE_KEY`,再运行`login.py`.
 ```shell
 python3 login.py
 # 都选择完之后可以去./myConfig/credentials中查看
