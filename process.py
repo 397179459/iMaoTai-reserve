@@ -9,7 +9,6 @@ import config
 from encrypt import Encrypt
 import requests
 import hashlib
-from bs4 import BeautifulSoup
 import logging
 
 AES_KEY = 'qbhajinldepmucsonaaaccgypwuvcjaa'
