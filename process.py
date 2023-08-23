@@ -19,7 +19,7 @@ SALT = '2af72f100c356273d46284f6fd1dfc08'
 CURRENT_TIME = str(int(time.time() * 1000))
 headers = {}
 
-
+'''
 # 获取茅台APP的版本号，暂时没找到接口，采用爬虫曲线救国
 # 用bs获取指定的class更稳定，之前的正则可能需要经常改动
 def get_mt_version():
@@ -39,6 +39,10 @@ def get_mt_version():
 
 
 mt_version = get_mt_version()
+'''
+# 通过ios应用商店的api获取最新版本
+mt_version = json.loads(requests.get('https://itunes.apple.com/cn/lookup?id=1600482450').text)['results'][0]['version']
+
 
 header_context = f'''
 MT-Lat: 28.499562
