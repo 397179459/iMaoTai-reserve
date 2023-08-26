@@ -15,6 +15,9 @@
     <img src="https://img.shields.io/github/issues-closed-raw/397179459/iMaoTai-reserve" alt="GitHub Closed Issues">
   </a>
   <a href="https://github.com/397179459/iMaoTai-reserve">
+    <img alt="GitHub commit activity (branch)" src="https://img.shields.io/github/commit-activity/y/397179459/iMaoTai-reserve">
+  </a>
+  <a href="https://github.com/397179459/iMaoTai-reserve">
     <img src="https://img.shields.io/github/last-commit/397179459/iMaoTai-reserve" alt="GitHub Last Commit">
   </a>
 </p>
