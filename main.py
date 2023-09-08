@@ -38,11 +38,11 @@ s_content = ""
 for section in configs.sections():
     if (configs.get(section, 'enddate') != 9) and (TODAY > configs.get(section, 'enddate')):
         continue
-    mobile = privateCrypt.decrypt_aes_ebc(section, aes_key)
+    mobile = privateCrypt.decrypt_aes_ecb(section, aes_key)
     province = configs.get(section, 'province')
     city = configs.get(section, 'city')
     token = configs.get(section, 'token')
-    userId = privateCrypt.decrypt_aes_ebc(configs.get(section, 'userid'), aes_key)
+    userId = privateCrypt.decrypt_aes_ecb(configs.get(section, 'userid'), aes_key)
     lat = configs.get(section, 'lat')
     lng = configs.get(section, 'lng')
 

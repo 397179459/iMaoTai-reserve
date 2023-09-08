@@ -67,8 +67,8 @@ if __name__ == '__main__':
         # 为了增加辨识度，这里做了隐私处理，不参与任何业务逻辑
         hide_mobile = mobile.replace(mobile[3:7], '****')
         # 因为加密了手机号和Userid，所以token就不做加密了
-        encrypt_mobile = privateCrypt.encrypt_aes_ebc(mobile, aes_key)
-        encrypt_userid = privateCrypt.encrypt_aes_ebc(str(userId), aes_key)
+        encrypt_mobile = privateCrypt.encrypt_aes_ecb(mobile, aes_key)
+        encrypt_userid = privateCrypt.encrypt_aes_ecb(str(userId), aes_key)
 
         if encrypt_mobile not in sections:
             config.add_section(encrypt_mobile)  # 首先添加一个新的section

@@ -19,7 +19,7 @@ def get_aes_key():
     return private_key_b
 
 
-def encrypt_aes_ebc(plain_str, key):
+def encrypt_aes_ecb(plain_str, key):
     """
     无偏移的AES加密
     :param plain_str: 需要加密的明文
@@ -31,7 +31,7 @@ def encrypt_aes_ebc(plain_str, key):
     return base64.b64encode(ciphertext).decode()
 
 
-def decrypt_aes_ebc(ciphertext, key):
+def decrypt_aes_ecb(ciphertext, key):
     """
     无偏移的AES解密
     :param ciphertext: 需要解密的密文
