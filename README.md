@@ -74,6 +74,7 @@ python3 main.py
 
 - *辉
 - *困
+- *ame
 
 ## 特别感谢
 技术思路：https://blog.csdn.net/weixin_47481826/article/details/128893239
