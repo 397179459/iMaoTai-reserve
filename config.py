@@ -17,8 +17,12 @@ ITEM_CODES = ['10213', '10214']   # 需要预约的商品(默认只预约2个赚
 push plus 微信推送,具体使用参考  https://www.pushplus.plus
 如没有配置则不推送消息
 为了安全,这里使用的环境配置.git里面请自行百度如何添加secrets.pycharm也可以自主添加.如果你实在不会,就直接用明文吧（O.o）
+
+参考：
+https://nekokiku.cn/2020/12/22/2020-12-22-Github-Action%E4%B8%ADpython%E8%8E%B7%E5%8F%96%E4%BB%93%E5%BA%93%E7%9A%84secrets/
+https://www.ruanyifeng.com/blog/2019/09/getting-started-with-github-actions.html
 '''
-PUSH_TOKEN = os.environ.get("PUSHPLUS_KEY")
+PUSH_TOKEN = os.environ.get("PUSH_TOKEN")
 
 
 '''
@@ -27,14 +31,13 @@ PUSH_TOKEN = os.environ.get("PUSHPLUS_KEY")
 '''
 AMAP_KEY = os.environ.get("GAODE_KEY")
 
-
 '''
 *********** 个人账户认证配置 ***********
 个人用户 credentials 路径
 不配置,使用默认路径,在项目目录中;如果需要配置,你自己应该也会配置路径
 例如： CREDENTIALS_PATH = './myConfig/credentials'
 '''
-CREDENTIALS_PATH = None
+CREDENTIALS_PATH = './myConfig/credentials'
 
 
 '''
@@ -46,7 +49,6 @@ key用了SHA-256转化,所以这里可以配置任意字符串,不用遵守AES�
 ps:本来是写了判断是否配置密钥，可以自由选择明文保存的方式。但是还是为了安全性，限制了必须使用AES加密。哪怕是明文密钥。
 '''
 PRIVATE_AES_KEY = os.environ.get("PRIVATE_AES_KEY")
-
 
 '''
 *********** 预约规则配置 ************
