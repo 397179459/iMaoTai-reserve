@@ -22,7 +22,7 @@ push plus 微信推送,具体使用参考  https://www.pushplus.plus
 https://nekokiku.cn/2020/12/22/2020-12-22-Github-Action%E4%B8%ADpython%E8%8E%B7%E5%8F%96%E4%BB%93%E5%BA%93%E7%9A%84secrets/
 https://www.ruanyifeng.com/blog/2019/09/getting-started-with-github-actions.html
 '''
-PUSH_TOKEN = os.environ.get("PUSH_TOKEN")
+PUSH_TOKEN = os.environ.get("PUSHPLUS_KEY")
 
 
 '''
