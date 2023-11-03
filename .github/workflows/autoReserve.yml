@@ -5,7 +5,7 @@ name: imaotai-action
 
 on:
   push:
-    branches: [ "env" ]
+    branches: [ "master" ]
     paths:
       - '.github/workflows/**'
   schedule:
@@ -45,6 +45,7 @@ jobs:
 
       - name: start run
         env:
+
           PUSHPLUS_KEY: ${{ secrets.PUSHPLUS_KEY }}
           PRIVATE_AES_KEY: ${{ secrets.PRIVATE_AES_KEY }}
         run: |
