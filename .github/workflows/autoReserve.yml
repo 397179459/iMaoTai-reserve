@@ -3,13 +3,13 @@
 
 name: imaotai-action
 
-on:
-  push:
-    branches: [ "master" ]
-    paths:
-      - '.github/workflows/**'
-  schedule:
-    - cron: '10,30,50 0,1 * * *'
+# on:
+#   push:
+#     branches: [ "master" ]
+#     paths:
+#       - '.github/workflows/**'
+#   schedule:
+#     - cron: '10,30,50 0,1 * * *'
 
 env:
   TZ: Asia/Shanghai
