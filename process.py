@@ -152,10 +152,11 @@ def get_location_count(province: str,
             f'get_location_count : params : {day_time}, response code : {responses.status_code}, response body : {responses.text}')
     shops = responses.json()['data']['shops']
 
-    if config.MAX_ENABLED:
-        return max_shop(city, item_code, p_c_map, province, shops)
-    if config.DISTANCE_ENABLED:
+    if config.RESERVE_RULE == 0:
         return distance_shop(city, item_code, p_c_map, province, shops, source_data, lat, lng)
+
+    if config.RESERVE_RULE == 1:
+        return max_shop(city, item_code, p_c_map, province, shops)
 
 
 # 获取距离最近的店铺
