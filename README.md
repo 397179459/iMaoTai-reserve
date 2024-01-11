@@ -72,6 +72,8 @@ python3 main.py
 
 #### 感谢老板赞赏，排名不分先后
 
+- *minal
+- *hoty
 - 佚名
 - *宇
 - *wang
