@@ -26,7 +26,7 @@ PUSH_TOKEN = '0f51ff8a4873494482863ecd003f1f69'
 获取地点信息,这里用的高德api,需要自己去高德开发者平台申请自己的key
 '''
 AMAP_KEY = os.environ.get("GAODE_KEY")
-AMAP_KEY = 'a5b3ad8d8a766c6716cdc473b949ac8c'
+AMAP_KEY = '4fc6f562a9d2093edc4b3bacf0d171fc'
 
 '''
 *********** 个人账户认证配置 ***********
