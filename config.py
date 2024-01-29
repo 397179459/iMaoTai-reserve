@@ -45,7 +45,7 @@ key用了SHA-256转化,所以这里可以配置任意字符串,不用遵守AES�
 如果不会配置环境变量(建议学习)、不care安全性、非开源运行,你可以在这里明文指定,eg:PRIVATE_AES_KEY = '666666'
 ps:本来是写了判断是否配置密钥，可以自由选择明文保存的方式。但是还是为了安全性，限制了必须使用AES加密。哪怕是明文密钥。
 '''
-PRIVATE_AES_KEY = os.environ.get("PRIVATE_AES_KEY")
+PRIVATE_AES_KEY = os.environ.get("PRIVATE_AES_KEY", "#%^&*^%^#%!#^%$&")
 
 
 '''
