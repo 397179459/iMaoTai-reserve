@@ -46,6 +46,7 @@ def get_location():
         return select
 
 
+
 if __name__ == '__main__':
 
     aes_key = privateCrypt.get_aes_key()
