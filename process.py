@@ -278,6 +278,8 @@ def reservation(params: dict, mobile: str):
 # 用高德api获取地图信息
 def select_geo(i: str):
     # 校验高德api是否配置
+    print("key =" )
+    print(os.environ.get("GAODE_KEY"))
     if config.AMAP_KEY is None:
         logging.error("!!!!请配置config.py中AMAP_KEY(高德地图的MapKey)")
         raise ValueError
