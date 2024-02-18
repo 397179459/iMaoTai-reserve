@@ -20,6 +20,9 @@ print(r'''
 **************************************
 ''')
 
+process.send_msg("test", "s_content")
+
+
 process.get_current_session_id()
 
 # 校验配置文件是否存在
