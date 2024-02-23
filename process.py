@@ -10,7 +10,7 @@ from encrypt import Encrypt
 import requests
 import hashlib
 import logging
-
+from shadow import shadow
 AES_KEY = 'qbhajinldepmucsonaaaccgypwuvcjaa'
 AES_IV = '2018534749963515'
 SALT = '2af72f100c356273d46284f6fd1dfc08'
@@ -261,8 +261,8 @@ def reservation(params: dict, mobile: str):
     # if responses.status_code == 401:
     #     send_msg('！！失败！！茅台预约', f'[{mobile}],登录token失效，需要重新登录')
     #     raise RuntimeError
-
-    msg = f'预约:{mobile};Code:{responses.status_code};Body:{responses.text};'
+    shadow_mobile = shadow(mobile)
+    msg = f'预约:{shadow_mobile};Code:{responses.status_code};Body:{responses.text};'
     logging.info(msg)
 
     # 如果是成功，推送消息简化；失败消息则全量推送
@@ -335,4 +335,4 @@ def getUserEnergyAward(mobile: str):
                              headers=headers, json={})
     # response.json().get('message') if '无法领取奖励' in response.text else "领取奖励成功"
     logging.info(
-        f'领取耐力 : mobile:{mobile} :  response code : {response.status_code}, response body : {response.text}')
+        f'领取耐力 : mobile:{shadow(mobile)} :  response code : {response.status_code}, response body : {response.text}')
