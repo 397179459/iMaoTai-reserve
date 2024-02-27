@@ -252,6 +252,9 @@ def send_msg(title, content):
                                   'content': content})
     logging.info(f'通知推送结果：{r.status_code, r.text}')
 
+def hide_mobile_number(mobile: str) -> str:
+    masked_mobile = mobile[:3] + '*' * 4 + mobile[-4:]
+    return masked_mobile
 
 # 核心代码，执行预约
 def reservation(params: dict, mobile: str):
@@ -262,13 +265,14 @@ def reservation(params: dict, mobile: str):
     #     send_msg('！！失败！！茅台预约', f'[{mobile}],登录token失效，需要重新登录')
     #     raise RuntimeError
 
-    msg = f'预约:{mobile};Code:{responses.status_code};Body:{responses.text};'
+    masked_mobile = hide_mobile_number(mobile)
+    msg = f'预约:{masked_mobile};Code:{responses.status_code};Body:{responses.text};'
     logging.info(msg)
 
     # 如果是成功，推送消息简化；失败消息则全量推送
     if responses.status_code == 200:
         r_success = True
-        msg = f'手机:{mobile};'
+        msg = f'手机:{masked_mobile};'
     else:
         r_success = False
 
@@ -335,4 +339,4 @@ def getUserEnergyAward(mobile: str):
                              headers=headers, json={})
     # response.json().get('message') if '无法领取奖励' in response.text else "领取奖励成功"
     logging.info(
-        f'领取耐力 : mobile:{mobile} :  response code : {response.status_code}, response body : {response.text}')
+        f'领取耐力 : mobile:{hide_mobile_number(mobile)} :  response code : {response.status_code}, response body : {response.text}')
