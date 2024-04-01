@@ -2,8 +2,9 @@
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
 
 name: imaotai-action
-
 on:
+  watch:
+    types: started
   push:
     branches: [ "master" ]
     paths:
