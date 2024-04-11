@@ -328,9 +328,9 @@ def get_map(lat: str = '28.499562', lng: str = '102.182324'):
     url = 'https://static.moutai519.com.cn/mt-backend/xhr/front/mall/resource/get'
     headers = {
         'X-Requested-With': 'XMLHttpRequest',
-        'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 15_0_1 like Mac OS X)',
+        'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_4_1 like Mac OS X)',
         'Referer': 'https://h5.moutai519.com.cn/gux/game/main?appConfig=2_1_2',
-        'Client-User-Agent': 'iOS;16.0.1;Apple;iPhone 14 ProMax',
+        'Client-User-Agent': 'iOS;17.4.1;Apple;iPhone 13 Pro',
         'MT-R': 'clips_OlU6TmFRag5rCXwbNAQ/Tz1SKlN8THcecBp/HGhHdw==',
         'Origin': 'https://h5.moutai519.com.cn',
         'MT-APP-Version': mt_version,
@@ -373,3 +373,29 @@ def getUserEnergyAward(mobile: str):
     # response.json().get('message') if '无法领取奖励' in response.text else "领取奖励成功"
     logging.info(
         f'领取耐力 : mobile:{mobile} :  response code : {response.status_code}, response body : {response.text}')
+
+#查询预约结果
+def checkReserveResult(mobile: str):
+    params = {"lastReserveId":"","reservationId":""}
+    # 只拉取第一页
+    # response = requests.get('https://app.moutai519.com.cn/xhr/front/mall/reservation/list/pageOne/queryV2', headers=headers, json={})
+    # 拉取历史第一页
+    response = requests.get('https://app.moutai519.com.cn/xhr/front/mall/reservation/list/more/queryV2', headers=headers, json=params)
+    r_content = ""
+    if response.status_code == 200:
+        r_success = True
+        resJson = response.json()
+        for idx in range(len(config.ITEM_CODES)):
+            lastResult = resJson["data"]["reservationItemVOS"][idx]
+            itemName = lastResult["itemName"]
+            status = lastResult["status"]
+            if status == 2:
+                r_content = r_content + "\n" + f"申购结果:🎉🎉 {mobile} 申购 {itemName} 成功！！"
+            else:
+                r_content = r_content + "\n" + f"申购结果: 😩😩 {mobile} 申购 {itemName} 失败！！"
+    else:
+        # 请求失败
+        r_success = False
+        r_content = f"❌申购结果 {mobile} 查询失败，请去App查看结果！"
+
+    return r_success, r_content
