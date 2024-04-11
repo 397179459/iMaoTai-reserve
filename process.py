@@ -10,6 +10,10 @@ from encrypt import Encrypt
 import requests
 import hashlib
 import logging
+import hmac
+import urllib
+import base64
+import urllib.parse
 
 AES_KEY = 'qbhajinldepmucsonaaaccgypwuvcjaa'
 AES_IV = '2018534749963515'
@@ -244,13 +248,46 @@ def act_params(shop_id: str, item_id: str):
 
 # 消息推送
 def send_msg(title, content):
-    if config.PUSH_TOKEN is None:
-        return
+    if config.PUSH_TOKEN is not None:
+        send_push_msg(title, content)
+    elif config.PUSH_DINGTALK_ACCESS_TOKEN is not None and config.PUSH_DINGTALK_SCRECT_KEY is not None:
+        send_webhook_msg(title, content)
+
+# push 消息发送
+def send_push_msg(title, content):
     url = 'http://www.pushplus.plus/send'
     r = requests.get(url, params={'token': config.PUSH_TOKEN,
                                   'title': title,
                                   'content': content})
     logging.info(f'通知推送结果：{r.status_code, r.text}')
+
+# 钉钉 消息推送
+def send_webhook_msg(title, content):
+    if len(title) == 0 and len(content) == 0:
+        return
+
+    timestamp = str(round(time.time() * 1000))
+    secret_enc = config.PUSH_DINGTALK_SCRECT_KEY.encode('utf-8')
+    string_to_sign = '{}\n{}'.format(timestamp, config.PUSH_DINGTALK_SCRECT_KEY)
+    string_to_sign_enc = string_to_sign.encode('utf-8')
+    hmac_code = hmac.new(secret_enc, string_to_sign_enc, digestmod=hashlib.sha256).digest()
+    sign = urllib.parse.quote_plus(base64.b64encode(hmac_code))
+    headers = {
+        'Content-Type': 'application/json'
+    }
+    params = {
+        "access_token": config.PUSH_DINGTALK_ACCESS_TOKEN,
+        "timestamp": timestamp,
+        "sign": sign
+    }
+    content = {
+        "msgtype": "text",
+        "text": {
+            "content": "%s\n\n%s"%(title, content)
+        }
+    }
+    response = requests.post("https://oapi.dingtalk.com/robot/send", headers=headers, params=params, json=content)
+    logging.info("Dingtalk发送消息状态码：{}".format(response.status_code))
 
 
 # 核心代码，执行预约
