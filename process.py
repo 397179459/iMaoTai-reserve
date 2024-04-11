@@ -248,15 +248,15 @@ def act_params(shop_id: str, item_id: str):
 
 # 消息推送
 def send_msg(title, content):
-    if config.PUSH_TOKEN is not None:
+    if config.MT_PUSHPLUS_KEY is not None:
         send_push_msg(title, content)
-    elif config.PUSH_DINGTALK_ACCESS_TOKEN is not None and config.PUSH_DINGTALK_SCRECT_KEY is not None:
+    elif config.MT_DINGTALK_ACCESS_TOKEN is not None and config.MT_DINGTALK_SECRET is not None:
         send_webhook_msg(title, content)
 
 # push 消息发送
 def send_push_msg(title, content):
     url = 'http://www.pushplus.plus/send'
-    r = requests.get(url, params={'token': config.PUSH_TOKEN,
+    r = requests.get(url, params={'token': config.MT_PUSHPLUS_KEY,
                                   'title': title,
                                   'content': content})
     logging.info(f'通知推送结果：{r.status_code, r.text}')
@@ -267,8 +267,8 @@ def send_webhook_msg(title, content):
         return
 
     timestamp = str(round(time.time() * 1000))
-    secret_enc = config.PUSH_DINGTALK_SCRECT_KEY.encode('utf-8')
-    string_to_sign = '{}\n{}'.format(timestamp, config.PUSH_DINGTALK_SCRECT_KEY)
+    secret_enc = config.MT_DINGTALK_SECRET.encode('utf-8')
+    string_to_sign = '{}\n{}'.format(timestamp, config.MT_DINGTALK_SECRET)
     string_to_sign_enc = string_to_sign.encode('utf-8')
     hmac_code = hmac.new(secret_enc, string_to_sign_enc, digestmod=hashlib.sha256).digest()
     sign = urllib.parse.quote_plus(base64.b64encode(hmac_code))
@@ -276,7 +276,7 @@ def send_webhook_msg(title, content):
         'Content-Type': 'application/json'
     }
     params = {
-        "access_token": config.PUSH_DINGTALK_ACCESS_TOKEN,
+        "access_token": config.MT_DINGTALK_ACCESS_TOKEN,
         "timestamp": timestamp,
         "sign": sign
     }
@@ -315,10 +315,10 @@ def reservation(params: dict, mobile: str):
 # 用高德api获取地图信息
 def select_geo(i: str):
     # 校验高德api是否配置
-    if config.AMAP_KEY is None:
+    if config.MT_GAODE_KEY is None:
         logging.error("!!!!请配置config.py中AMAP_KEY(高德地图的MapKey)")
         raise ValueError
-    resp = requests.get(f"https://restapi.amap.com/v3/geocode/geo?key={config.AMAP_KEY}&output=json&address={i}")
+    resp = requests.get(f"https://restapi.amap.com/v3/geocode/geo?key={config.MT_GAODE_KEY}&output=json&address={i}")
     geocodes: list = resp.json()['geocodes']
     return geocodes
 
