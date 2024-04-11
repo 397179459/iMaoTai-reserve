@@ -43,7 +43,6 @@ jobs:
 
       - name: start run
         env:
-          MT_PUSHPLUS_KEY: ${{ secrets.MT_PUSHPLUS_KEY }}
           MT_GAODE_KEY: ${{ secrets.MT_GAODE_KEY }}
           MT_PRIVATE_AES_KEY: ${{ secrets.MT_PRIVATE_AES_KEY }}
           MT_DINGTALK_ACCESS_TOKEN: ${{ secrets.MT_DINGTALK_ACCESS_TOKEN }}
