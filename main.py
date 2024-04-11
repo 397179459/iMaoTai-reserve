@@ -77,6 +77,11 @@ for section in configs.sections():
             s_content = s_content + r_content + shopInfo + "\n"
             # 领取小茅运和耐力值
             process.getUserEnergyAward(mobile)
+
+        # 查询申购结果
+        check_success, check_content = process.checkReserveResult(mobile)
+        s_content = s_content + "\n" + check_content
+
     except BaseException as e:
         print(e)
         logging.error(e)
