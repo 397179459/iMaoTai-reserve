@@ -9,6 +9,8 @@ import privateCrypt
 
 DATE_FORMAT = "%m/%d/%Y %H:%M:%S %p"
 TODAY = datetime.date.today().strftime("%Y%m%d")
+# utc 时间 小时数+8为北京时间
+HOUR = int(datetime.datetime.utcnow().strftime("%H"))
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s  %(filename)s : %(levelname)s  %(message)s',  # 定义输出log的格式
                     stream=sys.stdout,
@@ -32,8 +34,14 @@ if len(configs.sections()) == 0:
 
 aes_key = privateCrypt.get_aes_key()
 
-s_title = '茅台预约成功'
+s_title = '茅台预约成功！记得下午6点查看预约结果。'
 s_content = ""
+
+if HOUR == 1: # 上午9：00~上午9：59
+    logging.info(f"当前是北京时间{HOUR + 8}时，开始预约申购...")
+elif HOUR >= 10:  # 下午6点以后
+    logging.info(f"当前是北京时间{HOUR + 8}时，开始查询申购结果...")
+
 
 for section in configs.sections():
     if (configs.get(section, 'enddate') != 9) and (TODAY > configs.get(section, 'enddate')):
@@ -53,35 +61,39 @@ for section in configs.sections():
     process.init_headers(user_id=userId, token=token, lng=lng, lat=lat)
     # 根据配置中，要预约的商品ID，城市 进行自动预约
     try:
-        for item in config.ITEM_CODES:
-            max_shop_id = process.get_location_count(province=province,
-                                                     city=city,
-                                                     item_code=item,
-                                                     p_c_map=p_c_map,
-                                                     source_data=source_data,
-                                                     lat=lat,
-                                                     lng=lng)
-            # print(f'max shop id : {max_shop_id}')
-            if max_shop_id == '0':
-                continue
-            shop_info = source_data.get(str(max_shop_id))
-            title = config.ITEM_MAP.get(item)
-            shopInfo = f'商品:{title};门店:{shop_info["name"]}'
-            logging.info(shopInfo)
-            reservation_params = process.act_params(max_shop_id, item)
-            # 核心预约步骤
-            r_success, r_content = process.reservation(reservation_params, mobile)
-            # 为了防止漏掉推送异常，所有只要有一个异常，标题就显示失败
-            if not r_success:
-                s_title = '！！失败！！茅台预约'
-            s_content = s_content + r_content + shopInfo + "\n"
-            # 领取小茅运和耐力值
-            process.getUserEnergyAward(mobile)
-
-        # 查询申购结果
-        check_success, check_content = process.checkReserveResult(mobile)
-        s_content = s_content + "\n" + check_content
-
+        s_content = s_content + "\n"
+        if HOUR == 1: # 上午9：00~上午9：59
+            for item in config.ITEM_CODES:
+                max_shop_id = process.get_location_count(province=province,
+                                                         city=city,
+                                                         item_code=item,
+                                                         p_c_map=p_c_map,
+                                                         source_data=source_data,
+                                                         lat=lat,
+                                                         lng=lng)
+                if max_shop_id == '0':
+                    continue
+                shop_info = source_data.get(str(max_shop_id))
+                title = config.ITEM_MAP.get(item)
+                shopInfo = f'商品({title}),门店({shop_info["name"]})'
+                logging.info(shopInfo)
+                reservation_params = process.act_params(max_shop_id, item)
+                # 核心预约步骤
+                r_success, r_content = process.reservation(reservation_params, mobile)
+                # 为了防止漏掉推送异常，所有只要有一个异常，标题就显示失败
+                if not r_success:
+                    s_title = '！！失败！！茅台预约'
+                s_content = s_content + r_content + shopInfo + "\n"
+                # 领取小茅运和耐力值
+                process.getUserEnergyAward(mobile)
+        elif HOUR >= 10: # 下午6点以后
+            # 查询申购结果
+            check_success, check_content = process.checkReserveResult(mobile)
+            if check_success == True:
+                s_title = "恭喜！ 茅台申购成功，请尽快付款！"
+            else:
+                s_title = "很遗憾，茅台申购失败，明天继续加油！"
+            s_content = s_content + check_content + "\n"
     except BaseException as e:
         print(e)
         logging.error(e)
