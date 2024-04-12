@@ -286,9 +286,8 @@ def send_dingtalk_msg(title, content):
             "content": "%s\n%s"%(title, content)
         }
     }
-    response = requests.post("https://oapi.dingtalk.com/robot/send", headers=headers, params=params, json=content)
+    response = requests.post("https://oapi.dingtalk.com/robot/send", headers=headers, params=params, json=msg_content)
     logging.info("Dingtalk发送消息状态码：{}".format(response.status_code))
-
 
 # 核心代码，执行预约
 def reservation(params: dict, mobile: str):
