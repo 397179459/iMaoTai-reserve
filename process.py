@@ -251,7 +251,7 @@ def send_msg(title, content):
     if config.MT_PUSHPLUS_KEY is not None:
         send_push_msg(title, content)
     elif config.MT_DINGTALK_ACCESS_TOKEN is not None and config.MT_DINGTALK_SECRET is not None:
-        send_webhook_msg(title, content)
+        send_dingtalk_msg(title, content)
 
 # push 消息发送
 def send_push_msg(title, content):
@@ -262,7 +262,7 @@ def send_push_msg(title, content):
     logging.info(f'通知推送结果：{r.status_code, r.text}')
 
 # 钉钉 消息推送
-def send_webhook_msg(title, content):
+def send_dingtalk_msg(title, content):
     if len(title) == 0 and len(content) == 0:
         return
 
@@ -280,32 +280,32 @@ def send_webhook_msg(title, content):
         "timestamp": timestamp,
         "sign": sign
     }
-    content = {
+    msg_content = {
         "msgtype": "text",
         "text": {
-            "content": "%s\n\n%s"%(title, content)
+            "content": "%s\n%s"%(title, content)
         }
     }
-    response = requests.post("https://oapi.dingtalk.com/robot/send", headers=headers, params=params, json=content)
+    response = requests.post("https://oapi.dingtalk.com/robot/send", headers=headers, params=params, json=msg_content)
     logging.info("Dingtalk发送消息状态码：{}".format(response.status_code))
-
 
 # 核心代码，执行预约
 def reservation(params: dict, mobile: str):
     params.pop('userId')
     responses = requests.post("https://app.moutai519.com.cn/xhr/front/mall/reservation/add", json=params,
                               headers=headers)
+    ret_msg = responses.json()["message"]
     # if responses.status_code == 401:
     #     send_msg('！！失败！！茅台预约', f'[{mobile}],登录token失效，需要重新登录')
     #     raise RuntimeError
 
-    msg = f'预约:{mobile};Code:{responses.status_code};Body:{responses.text};'
+    msg = f'【{mobile}】预约结果：code({responses.status_code}),msg({ret_msg}) '
     logging.info(msg)
 
     # 如果是成功，推送消息简化；失败消息则全量推送
     if responses.status_code == 200:
         r_success = True
-        msg = f'手机:{mobile};'
+        msg = f'【{mobile}】'
     else:
         r_success = False
 
@@ -378,24 +378,24 @@ def getUserEnergyAward(mobile: str):
 def checkReserveResult(mobile: str):
     params = {"lastReserveId":"","reservationId":""}
     # 只拉取第一页
-    # response = requests.get('https://app.moutai519.com.cn/xhr/front/mall/reservation/list/pageOne/queryV2', headers=headers, json={})
+    response = requests.get('https://app.moutai519.com.cn/xhr/front/mall/reservation/list/pageOne/queryV2', headers=headers, json={})
     # 拉取历史第一页
-    response = requests.get('https://app.moutai519.com.cn/xhr/front/mall/reservation/list/more/queryV2', headers=headers, json=params)
-    r_content = ""
+    # response = requests.get('https://app.moutai519.com.cn/xhr/front/mall/reservation/list/more/queryV2', headers=headers, json=params)
+    check_content = ""
+    check_success = False
     if response.status_code == 200:
-        r_success = True
         resJson = response.json()
         for idx in range(len(config.ITEM_CODES)):
             lastResult = resJson["data"]["reservationItemVOS"][idx]
             itemName = lastResult["itemName"]
             status = lastResult["status"]
             if status == 2:
-                r_content = r_content + "\n" + f"申购结果:🎉🎉 {mobile} 申购 {itemName} 成功！！"
+                check_success = True
+                check_content = check_content + f"🎉【{mobile}】 申购【{itemName}】成功！！\n"
             else:
-                r_content = r_content + "\n" + f"申购结果: 😩😩 {mobile} 申购 {itemName} 失败！！"
+                check_content = check_content + f"😩【{mobile}】 申购【{itemName}】失败！！\n"
     else:
         # 请求失败
-        r_success = False
-        r_content = f"❌申购结果 {mobile} 查询失败，请去App查看结果！"
+        check_content = f"❌【{mobile}】申购结果查询失败，请去App查看结果！"
 
-    return r_success, r_content
+    return check_success, check_content
