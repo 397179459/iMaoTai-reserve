@@ -42,7 +42,8 @@ if HOUR == 1: # 上午9：00~上午9：59
     logging.info(f"当前是北京时间{HOUR + 8}时，开始预约申购...")
 elif HOUR >= 10:  # 下午6点以后
     logging.info(f"当前是北京时间{HOUR + 8}时，开始查询申购结果...")
-
+else:
+    logging.info("当前已过预约时段，请耐心等待预约结果")
 
 for section in configs.sections():
     if (configs.get(section, 'enddate') != 9) and (TODAY > configs.get(section, 'enddate')):
@@ -96,6 +97,8 @@ for section in configs.sections():
             else:
                 s_title = "很遗憾，茅台申购失败，明天继续加油！"
             s_content = s_content + check_content + "\n"
+        else:
+            s_title = "当前已过预约时段，请确认时间"
     except BaseException as e:
         print(e)
         logging.error(e)
