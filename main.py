@@ -11,8 +11,7 @@ from shadow import shadow
 DATE_FORMAT = "%m/%d/%Y %H:%M:%S %p"
 TODAY = datetime.date.today().strftime("%Y%m%d")
 # utc 时间 小时数+8为北京时间
-# HOUR = int(datetime.datetime.utcnow().strftime("%H"))
-HOUR = 11
+HOUR = int(datetime.datetime.utcnow().strftime("%H"))
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s  %(filename)s : %(levelname)s  %(message)s',  # 定义输出log的格式
                     stream=sys.stdout,
