@@ -1,4 +1,5 @@
 #!/bin/bash
+cd ~/iMaoTai-reserve
 # 安装依赖
 echo "安装依赖..."
 pip3 install --no-cache-dir -r requirements.txt
