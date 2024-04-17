@@ -6,9 +6,10 @@ name: imaotai-action
 on:
   push:
     branches: [ "master" ]
-  schedule:
-    - cron: '1,10 1 * * *' # 上午9点1分、10分去预约
-    - cron: '1,10 10 * * *' # 下午6点1分、10分查询结果
+#  github 定时 actions
+#  schedule:
+#    - cron: '1,10 1 * * *' # 上午9点1分、10分去预约
+#    - cron: '1,10 10 * * *' # 下午6点1分、10分查询结果
 
 env:
   TZ: Asia/Shanghai
