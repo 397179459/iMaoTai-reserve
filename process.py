@@ -388,6 +388,7 @@ def checkReserveResult(mobile: str):
         resJson = response.json()
         for idx in range(len(config.ITEM_CODES)):
             lastResult = resJson["data"]["reservationItemVOS"][idx]
+            logging.info(f'【{mobile}】【{idx}】result({lastResult})')
             itemName = lastResult["itemName"]
             status = lastResult["status"]
             if status == 2:

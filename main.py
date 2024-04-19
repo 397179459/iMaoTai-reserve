@@ -12,8 +12,7 @@ from shadow import shadow
 DATE_FORMAT = "%m/%d/%Y %H:%M:%S %p"
 TODAY = datetime.date.today().strftime("%Y%m%d")
 # utc时间 小时数+8为北京时间
-# HOUR = int(datetime.datetime.utcnow().strftime("%H"))
-HOUR = 10
+HOUR = int(datetime.datetime.utcnow().strftime("%H"))
 detailTimeString = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 aes_key = privateCrypt.get_aes_key()
 s_title = ''
@@ -24,9 +23,12 @@ def main():
     global s_title
 
     setup_logging()
+    logging.info(f'utc HOUR: {HOUR}')
     configs = setup_useData()
+    logging.info(f'检查配置文件完成{configs.sections()}')
 
     if HOUR == 1 or HOUR >= 10:
+        logging.info(f'当前utc HOUR:{HOUR},开始处理逻辑')
         handleAllUsers(configs, HOUR)
     else:
         logging.info("当前非预约时段，请检查设备时间")
@@ -35,6 +37,7 @@ def main():
 
     # 发送通知消息
     process.send_msg(s_title, s_content)
+    logging.info('<<<< 处理完成，运行结束 >>>>')
     sys.exit(0)
 
 def handleAllUsers(configs,UGCHour):
@@ -53,9 +56,12 @@ def handleAllUsers(configs,UGCHour):
         process.UserId = userId
         process.TOKEN = token
         process.init_headers(user_id=userId, token=token, lng=lng, lat=lat)
+        logging.info(f'process 初始化header完成：{process.headers}')
         if UGCHour == 1: # 去预约
+            logging.info(f'在预约时段内，去预约【{mask_mobile}】')
             reserve(province, city, p_c_map, source_data, lat, lng, mask_mobile)
         else: # 查询申购结果
+            logging.info(f'在查询申购结果时段内，去查询申购结果【{mask_mobile}】')
             check_reserve_result(mask_mobile)
     return
 
@@ -90,19 +96,22 @@ def reserve(province, city,p_c_map,source_data, lat, lng, mask_mobile):
             # 领取小茅运和耐力值
             process.getUserEnergyAward(mask_mobile)
     except BaseException as e:
-        logging.error(e)
+        logging.error(f'预约运行错误：{e}')
     return
 
 def check_reserve_result(mobile: str):
     global s_content
     global s_title
-    # 查询申购结果
-    check_success, check_content = process.checkReserveResult(mobile)
-    s_content = s_content + check_content + "\n"
-    if check_success == True:
-        s_title = "恭喜！ 茅台申购成功，请尽快付款！"
-    else:
-        s_title = "很遗憾，茅台申购失败，明天继续加油！"
+    try:
+        # 查询申购结果
+        check_success, check_content = process.checkReserveResult(mobile)
+        s_content = s_content + check_content + "\n"
+        if check_success == True:
+            s_title = "恭喜！ 茅台申购成功，请尽快付款！"
+        else:
+            s_title = "很遗憾，茅台申购失败，明天继续加油！"
+    except BaseException as e:
+        logging.error(f'查询结果运行错误：{e}')
     return
 
 def setup_useData():
