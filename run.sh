@@ -1,4 +1,5 @@
 #!/bin/bash
+echo "<<<< 开始运行定时任务脚本 >>>>"
 cd ~/iMaoTai-reserve
 # 安装依赖
 echo "安装依赖..."
@@ -11,3 +12,4 @@ else
     mkdir log
 fi
 python3 main.py
+echo "<<<< 定时任务脚本已运行结束 >>>> \n"
