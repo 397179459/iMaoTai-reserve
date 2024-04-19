@@ -8,104 +8,121 @@ import process
 import privateCrypt
 from shadow import shadow
 
+# 全局变量
 DATE_FORMAT = "%m/%d/%Y %H:%M:%S %p"
 TODAY = datetime.date.today().strftime("%Y%m%d")
-# utc 时间 小时数+8为北京时间
-HOUR = int(datetime.datetime.utcnow().strftime("%H"))
+# utc时间 小时数+8为北京时间
+# HOUR = int(datetime.datetime.utcnow().strftime("%H"))
+HOUR = 10
 detailTimeString = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-log_file_path = 'log/%s.log'%TODAY # 以天分割log
-logging.basicConfig(filename=log_file_path,
-                    filemode='a',
-                    level=logging.INFO,
-                    format='%(asctime)s  %(filename)s : %(levelname)s  %(message)s',  # 定义输出log的格式
-                    datefmt=DATE_FORMAT)
-logging.info("<<<< 开始运行 >>>>")
-print(r'''
-**************************************
-    欢迎使用i茅台自动预约工具
-    作者GitHub：https://github.com/3 9 7 1 7 9 4 5 9
-    vx：L 3 9 7 1 7 9 4 5 9 加好友注明来意
-**************************************
-''')
-
-process.get_current_session_id()
-
-# 校验配置文件是否存在
-configs = login.config
-if len(configs.sections()) == 0:
-    logging.error("配置文件未找到配置")
-    sys.exit(1)
-
 aes_key = privateCrypt.get_aes_key()
+s_title = ''
+s_content = ''
 
-s_title = '茅台预约成功！记得下午6点查看预约结果。'
-s_content = ""
+def main():
+    global s_content
+    global s_title
 
-if HOUR == 1: # 上午9：00~上午9：59
-    logging.info(f"当前是北京时间{HOUR + 8}时，开始预约申购...")
-elif HOUR >= 10:  # 下午6点以后
-    logging.info(f"当前是北京时间{HOUR + 8}时，开始查询申购结果...")
-else:
-    logging.info("当前已过预约时段，请耐心等待预约结果")
+    setup_logging()
+    configs = setup_useData()
 
-for section in configs.sections():
-    if (configs.get(section, 'enddate') != 9) and (TODAY > configs.get(section, 'enddate')):
-        continue
-    mobile = privateCrypt.decrypt_aes_ecb(section, aes_key)
-    mask_mobile = shadow(mobile)
-    province = configs.get(section, 'province')
-    city = configs.get(section, 'city')
-    token = configs.get(section, 'token')
-    userId = privateCrypt.decrypt_aes_ecb(configs.get(section, 'userid'), aes_key)
-    lat = configs.get(section, 'lat')
-    lng = configs.get(section, 'lng')
+    if HOUR == 1 or HOUR >= 10:
+        handleAllUsers(configs, HOUR)
+    else:
+        logging.info("当前非预约时段，请检查设备时间")
+        s_title = "当前非预约时段，请检查时间!!"
+        s_content = ""
 
-    p_c_map, source_data = process.get_map(lat=lat, lng=lng)
+    # 发送通知消息
+    process.send_msg(s_title, s_content)
+    sys.exit(0)
 
-    process.UserId = userId
-    process.TOKEN = token
-    process.init_headers(user_id=userId, token=token, lng=lng, lat=lat)
-    # 根据配置中，要预约的商品ID，城市 进行自动预约
+def handleAllUsers(configs,UGCHour):
+    for user in configs.sections():
+        if (configs.get(user, 'enddate') != 9) and (TODAY > configs.get(user, 'enddate')):
+            continue
+        mobile = privateCrypt.decrypt_aes_ecb(user, aes_key)
+        mask_mobile = shadow(mobile)
+        province = configs.get(user, 'province')
+        city = configs.get(user, 'city')
+        token = configs.get(user, 'token')
+        userId = privateCrypt.decrypt_aes_ecb(configs.get(user, 'userid'), aes_key)
+        lat = configs.get(user, 'lat')
+        lng = configs.get(user, 'lng')
+        p_c_map, source_data = process.get_map(lat=lat, lng=lng)
+        process.UserId = userId
+        process.TOKEN = token
+        process.init_headers(user_id=userId, token=token, lng=lng, lat=lat)
+        if UGCHour == 1: # 去预约
+            reserve(province, city, p_c_map, source_data, lat, lng, mask_mobile)
+        else: # 查询申购结果
+            check_reserve_result(mask_mobile)
+    return
+
+def reserve(province, city,p_c_map,source_data, lat, lng, mask_mobile):
+    global s_content
+    global s_title
+    s_content = s_content + "\n"
     try:
-        if HOUR == 1: # 上午9：00~上午9：59
-            s_content = s_content + "\n"
-            for item in config.ITEM_CODES:
-                max_shop_id = process.get_location_count(province=province,
-                                                         city=city,
-                                                         item_code=item,
-                                                         p_c_map=p_c_map,
-                                                         source_data=source_data,
-                                                         lat=lat,
-                                                         lng=lng)
-                if max_shop_id == '0':
-                    continue
-                shop_info = source_data.get(str(max_shop_id))
-                title = config.ITEM_MAP.get(item)
-                shopInfo = f'商品({title}),门店({shop_info["name"]})'
-                logging.info(shopInfo)
-                reservation_params = process.act_params(max_shop_id, item)
-                # 核心预约步骤
-                r_success, r_content = process.reservation(reservation_params, mask_mobile)
-                # 为了防止漏掉推送异常，所有只要有一个异常，标题就显示失败
-                if not r_success:
-                    s_title = '！！失败！！茅台预约'
-                s_content = s_content + r_content + shopInfo + "\n"
-                # 领取小茅运和耐力值
-                process.getUserEnergyAward(mask_mobile)
-        elif HOUR >= 10: # 下午6点以后
-            # 查询申购结果
-            check_success, check_content = process.checkReserveResult(mask_mobile)
-            if check_success == True:
-                s_title = "恭喜！ 茅台申购成功，请尽快付款！"
+        for item in config.ITEM_CODES:
+            max_shop_id = process.get_location_count(province=province,
+                                                     city=city,
+                                                     item_code=item,
+                                                     p_c_map=p_c_map,
+                                                     source_data=source_data,
+                                                     lat=lat,
+                                                     lng=lng)
+            if max_shop_id == '0':
+                continue
+            shop_info = source_data.get(str(max_shop_id))
+            title = config.ITEM_MAP.get(item)
+            shopInfo = f'商品({title}),门店({shop_info["name"]})'
+            logging.info(shopInfo)
+            reservation_params = process.act_params(max_shop_id, item)
+            # 核心预约步骤
+            r_success, r_content = process.reservation(reservation_params, mask_mobile)
+            # 为了防止漏掉推送异常，所有只要有一个异常，标题就显示失败
+            if r_success == True:
+                s_title = "茅台预约成功！记得下午6点查看预约结果。"
             else:
-                s_title = "很遗憾，茅台申购失败，明天继续加油！"
-            s_content = s_content + check_content + "\n"
-        else:
-            s_title = "当前已过预约时段，请确认时间"
+                s_title = '！！失败！！茅台预约'
+            s_content = s_content + r_content + shopInfo + "\n"
+            # 领取小茅运和耐力值
+            process.getUserEnergyAward(mask_mobile)
     except BaseException as e:
-        print(e)
         logging.error(e)
+    return
 
-# 推送消息
-process.send_msg(s_title, s_content)
+def check_reserve_result(mobile: str):
+    global s_content
+    global s_title
+    # 查询申购结果
+    check_success, check_content = process.checkReserveResult(mobile)
+    s_content = s_content + check_content + "\n"
+    if check_success == True:
+        s_title = "恭喜！ 茅台申购成功，请尽快付款！"
+    else:
+        s_title = "很遗憾，茅台申购失败，明天继续加油！"
+    return
+
+def setup_useData():
+    process.get_current_session_id()
+    # 校验配置文件是否存在
+    configs = login.config
+    if len(configs.sections()) == 0:
+        logging.error("配置文件未找到配置")
+        sys.exit(1)
+    return configs
+
+def setup_logging():
+    log_file_path = 'log/%s.log'%TODAY # 以天分割log
+    logging.basicConfig(filename=log_file_path,
+                        filemode='a',
+                        level=logging.INFO,
+                        format='%(asctime)s  %(filename)s : %(levelname)s  %(message)s',  # 定义输出log的格式
+                        datefmt=DATE_FORMAT)
+    logging.info("<<<< 开始运行 >>>>")
+    return
+
+if __name__ == "__main__":
+    main()

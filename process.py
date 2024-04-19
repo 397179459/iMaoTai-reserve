@@ -286,6 +286,7 @@ def send_dingtalk_msg(title, content):
             "content": "%s\n%s"%(title, content)
         }
     }
+    logging.info(f'钉钉：msg({msg_content})')
     response = requests.post("https://oapi.dingtalk.com/robot/send", headers=headers, params=params, json=msg_content)
     logging.info("Dingtalk发送消息状态码：{}".format(response.status_code))
 
