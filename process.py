@@ -249,8 +249,10 @@ def act_params(shop_id: str, item_id: str):
 # 消息推送
 def send_msg(title, content):
     if config.MT_PUSHPLUS_KEY is not None:
+        logging.info('通过PUSHPLUS发送消息')
         send_push_msg(title, content)
     elif config.MT_DINGTALK_ACCESS_TOKEN is not None and config.MT_DINGTALK_SECRET is not None:
+        logging.info('通过钉钉发送消息')
         send_dingtalk_msg(title, content)
 
 # push 消息发送
@@ -265,30 +267,34 @@ def send_push_msg(title, content):
 def send_dingtalk_msg(title, content):
     if len(title) == 0 and len(content) == 0:
         return
-
-    timestamp = str(round(time.time() * 1000))
-    secret_enc = config.MT_DINGTALK_SECRET.encode('utf-8')
-    string_to_sign = '{}\n{}'.format(timestamp, config.MT_DINGTALK_SECRET)
-    string_to_sign_enc = string_to_sign.encode('utf-8')
-    hmac_code = hmac.new(secret_enc, string_to_sign_enc, digestmod=hashlib.sha256).digest()
-    sign = urllib.parse.quote_plus(base64.b64encode(hmac_code))
-    headers = {
-        'Content-Type': 'application/json'
-    }
-    params = {
-        "access_token": config.MT_DINGTALK_ACCESS_TOKEN,
-        "timestamp": timestamp,
-        "sign": sign
-    }
-    msg_content = {
-        "msgtype": "text",
-        "text": {
-            "content": "%s\n%s"%(title, content)
+    logging.info("开始构建钉钉消息")
+    try:
+        timestamp = str(round(time.time() * 1000))
+        secret_enc = config.MT_DINGTALK_SECRET.encode('utf-8')
+        string_to_sign = '{}\n{}'.format(timestamp, config.MT_DINGTALK_SECRET)
+        string_to_sign_enc = string_to_sign.encode('utf-8')
+        hmac_code = hmac.new(secret_enc, string_to_sign_enc, digestmod=hashlib.sha256).digest()
+        sign = urllib.parse.quote_plus(base64.b64encode(hmac_code))
+        dk_headers = {
+            'Content-Type': 'application/json'
         }
-    }
-    logging.info(f'钉钉：msg({msg_content})')
-    response = requests.post("https://oapi.dingtalk.com/robot/send", headers=headers, params=params, json=msg_content)
-    logging.info("Dingtalk发送消息状态码：{}".format(response.status_code))
+        dk_params = {
+            "access_token": config.MT_DINGTALK_ACCESS_TOKEN,
+            "timestamp": timestamp,
+            "sign": sign
+        }
+        dk_msg_content = {
+            "msgtype": "text",
+            "text": {
+                "content": "%s\n%s"%(title, content)
+            }
+        }
+        logging.info(f'钉钉消息构建成功：headers({dk_headers}),params({dk_params}),msg({dk_msg_content})')
+        response = requests.post("https://oapi.dingtalk.com/robot/send", headers=dk_headers, params=dk_params, json=dk_msg_content)
+        logging.info("Dingtalk发送消息状态码：{}".format(response.status_code))
+    except BaseException as e:
+        logging.error(f'钉钉消息发送错误：{e}')
+    return
 
 # 核心代码，执行预约
 def reservation(params: dict, mobile: str):
