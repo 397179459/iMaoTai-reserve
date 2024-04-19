@@ -36,6 +36,7 @@ def main():
         s_content = ""
 
     # 发送通知消息
+    logging.info(f"处理逻辑完成，去发送消息，title({s_title}),content({s_content})")
     process.send_msg(s_title, s_content)
     logging.info('<<<< 处理完成，运行结束 >>>>')
     sys.exit(0)
@@ -107,7 +108,7 @@ def check_reserve_result(mobile: str):
         check_success, check_content = process.checkReserveResult(mobile)
         s_content = s_content + check_content + "\n"
         if check_success == True:
-            s_title = "恭喜！ 茅台申购成功，请尽快付款！"
+            s_title = f"恭喜！ 【{mobile}】茅台申购成功，请尽快付款！"
         else:
             s_title = "很遗憾，茅台申购失败，明天继续加油！"
     except BaseException as e:
