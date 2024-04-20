@@ -254,6 +254,9 @@ def send_msg(title, content):
     elif config.MT_DINGTALK_ACCESS_TOKEN is not None and config.MT_DINGTALK_SECRET is not None:
         logging.info('通过钉钉发送消息')
         send_dingtalk_msg(title, content)
+    else:
+        logging.error(f'没有可用的通知key，请检查环境变量配置！！')
+        logging.info(f'MT_PUSHPLUS_KEY={config.MT_PUSHPLUS_KEY},MT_DINGTALK_ACCESS_TOKEN={config.MT_DINGTALK_ACCESS_TOKEN},MT_DINGTALK_SECRET={MT_DINGTALK_SECRET}')
 
 # push 消息发送
 def send_push_msg(title, content):
