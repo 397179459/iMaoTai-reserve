@@ -1,6 +1,7 @@
 import datetime
 import logging
 import sys
+import time
 
 import config
 import login
@@ -94,8 +95,12 @@ def reserve(province, city,p_c_map,source_data, lat, lng, mask_mobile):
             else:
                 s_title = '！！失败！！茅台预约'
             s_content = s_content + r_content + shopInfo + "\n"
-            # 领取小茅运和耐力值
-            process.getUserEnergyAward(mask_mobile)
+        # 循环预约结束
+        logging.info('预约完成，延迟3秒后去领取小茅运和耐力')
+        # 领取小茅运和耐力值
+        time.sleep(3)
+        logging.info('去领取小茅运和耐力')
+        process.getUserEnergyAward(mask_mobile)
     except BaseException as e:
         logging.error(f'预约运行错误：{e}')
     return
