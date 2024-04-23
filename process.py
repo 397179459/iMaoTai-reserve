@@ -310,12 +310,11 @@ def reservation(params: dict, mobile: str):
     #     raise RuntimeError
 
     msg = f'【{mobile}】预约结果：code({responses.status_code}),msg({ret_msg}) '
-    logging.info(msg)
+    logging.info(f'预约结果返回：{responses.json()}')
 
     # 如果是成功，推送消息简化；失败消息则全量推送
     if responses.status_code == 200:
         r_success = True
-        msg = f'【{mobile}】'
     else:
         r_success = False
 
