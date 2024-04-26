@@ -301,23 +301,28 @@ def send_dingtalk_msg(title, content):
 
 # 核心代码，执行预约
 def reservation(params: dict, mobile: str):
-    params.pop('userId')
-    responses = requests.post("https://app.moutai519.com.cn/xhr/front/mall/reservation/add", json=params,
-                              headers=headers)
-    ret_msg = responses.json()["message"]
-    # if responses.status_code == 401:
-    #     send_msg('！！失败！！茅台预约', f'[{mobile}],登录token失效，需要重新登录')
-    #     raise RuntimeError
+    r_success = False
+    msg = f"{mobile}】预约结果查询..."
+    try:
+        params.pop('userId')
+        logging.info(f'reservation start ...\n params({params}), mobile({mobile})')
+        responses = requests.post("https://app.moutai519.com.cn/xhr/front/mall/reservation/add", json=params,
+                                  headers=headers)
+        ret_msg = responses.json()["message"]
+        # if responses.status_code == 401:
+        #     send_msg('！！失败！！茅台预约', f'[{mobile}],登录token失效，需要重新登录')
+        #     raise RuntimeError
 
-    msg = f'【{mobile}】预约结果：code({responses.status_code}),msg({ret_msg}) '
-    logging.info(f'预约结果返回：{responses.json()}')
+        msg = f'【{mobile}】预约结果：code({responses.status_code}),msg({ret_msg}) '
+        logging.info(f'预约结果返回：{responses.json()}')
 
-    # 如果是成功，推送消息简化；失败消息则全量推送
-    if responses.status_code == 200:
-        r_success = True
-    else:
-        r_success = False
-
+        # 如果是成功，推送消息简化；失败消息则全量推送
+        if responses.status_code == 200:
+            r_success = True
+        else:
+            r_success = False
+    except BaseException as e:
+        logging.error(f'reservation error:{e}')
     return r_success, msg
 
 
