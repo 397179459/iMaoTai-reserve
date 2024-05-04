@@ -1,9 +1,7 @@
 import datetime
 import json
 import math
-import os
 import random
-import re
 import time
 import config
 from encrypt import Encrypt
@@ -49,7 +47,7 @@ mt_version = json.loads(requests.get('https://itunes.apple.com/cn/lookup?id=1600
 
 header_context = f'''
 MT-Lat: 28.499562
-MT-K: 1675213490331
+MT-K: f'{int(time.time() * 1000)}'
 MT-Lng: 102.182324
 Host: app.moutai519.com.cn
 MT-User-Tag: 0
@@ -256,7 +254,7 @@ def send_msg(title, content):
         send_dingtalk_msg(title, content)
     else:
         logging.error(f'没有可用的通知key，请检查环境变量配置！！')
-        logging.info(f'MT_PUSHPLUS_KEY={config.MT_PUSHPLUS_KEY},MT_DINGTALK_ACCESS_TOKEN={config.MT_DINGTALK_ACCESS_TOKEN},MT_DINGTALK_SECRET={MT_DINGTALK_SECRET}')
+        logging.info(f'MT_PUSHPLUS_KEY={config.MT_PUSHPLUS_KEY},MT_DINGTALK_ACCESS_TOKEN={config.MT_DINGTALK_ACCESS_TOKEN},MT_DINGTALK_SECRET={config.MT_DINGTALK_SECRET}')
 
 # push 消息发送
 def send_push_msg(title, content):
@@ -302,18 +300,18 @@ def send_dingtalk_msg(title, content):
 # 核心代码，执行预约
 def reservation(params: dict, mobile: str):
     r_success = False
-    msg = f"{mobile}】预约结果查询..."
+    msg = f"{mobile}】预约中..."
     try:
         params.pop('userId')
         logging.info(f'reservation start ...\n params({params}), mobile({mobile})')
         responses = requests.post("https://app.moutai519.com.cn/xhr/front/mall/reservation/add", json=params,
                                   headers=headers)
-        ret_msg = responses.json()["message"]
+        ret_msg = responses.text
         # if responses.status_code == 401:
         #     send_msg('！！失败！！茅台预约', f'[{mobile}],登录token失效，需要重新登录')
         #     raise RuntimeError
 
-        msg = f'【{mobile}】预约结果：code({responses.status_code}),msg({ret_msg}) '
+        msg = f'【{mobile}】预约结果: msg({ret_msg}) '
         logging.info(f'预约结果返回：{responses.json()}')
 
         # 如果是成功，推送消息简化；失败消息则全量推送
