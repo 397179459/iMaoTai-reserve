@@ -58,12 +58,12 @@ MT-Network-Type: WIFI
 MT-Token: 1
 MT-Team-ID: 
 MT-Info: 028e7f96f6369cafe1d105579c5b9377
-MT-Device-ID: 2F2075D0-B66C-4287-A903-DBFF6358342A
+MT-Device-ID: C3EDD3A8-EB9A-4951-A203-BFD2112247A1
 MT-Bundle-ID: com.moutai.mall
 Accept-Language: en-CN;q=1, zh-Hans-CN;q=0.9
 MT-Request-ID: 167560018873318465
 MT-APP-Version: 1.3.7
-User-Agent: iOS;16.3;Apple;?unrecognized?
+User-Agent: Mozilla/5.0 (iPhone; CPU iPhone OS 17_4_1 like Mac OS X)
 MT-R: clips_OlU6TmFRag5rCXwbNAQ/Tz1SKlN8THcecBp/HGhHdw==
 Content-Length: 93
 Accept-Encoding: gzip, deflate, br
@@ -349,11 +349,14 @@ def get_map(lat: str = '28.499562', lng: str = '102.182324'):
         'Origin': 'https://h5.moutai519.com.cn',
         'MT-APP-Version': mt_version,
         'MT-Request-ID': f'{int(time.time() * 1000)}{random.randint(1111111, 999999999)}{int(time.time() * 1000)}',
-        'Accept-Language': 'zh-CN,zh-Hans;q=1',
-        'MT-Device-ID': f'{int(time.time() * 1000)}{random.randint(1111111, 999999999)}{int(time.time() * 1000)}',
+        'Accept-Language': 'zh-Hans-CN;q=1, ko-CN;q=0.9, en-CN;q=0.8',
+        'MT-Device-ID': 'C3EDD3A8-EB9A-4951-A203-BFD2112247A1',
         'Accept': 'application/json, text/javascript, */*; q=0.01',
+        'MT-Bundle-ID': 'com.moutai.mall',
+        'MT-Network-Type': 'WIFI',
         'mt-lng': f'{lng}',
-        'mt-lat': f'{lat}'
+        'mt-lat': f'{lat}',
+        'MT-K': f'{int(time.time() * 1000)}'
     }
     res = requests.get(url, headers=headers, )
     mtshops = res.json().get('data', {}).get('mtshops_pc', {})
