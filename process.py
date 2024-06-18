@@ -54,11 +54,12 @@ MT-Network-Type: WIFI
 MT-Token: 1
 MT-Team-ID: 
 MT-Info: 028e7f96f6369cafe1d105579c5b9377
-MT-Device-ID: 2F2075D0-B66C-4287-A903-DBFF6358342A
+BS-DVID: aN0pza2EHC2EEt2PLEg1I49ojYIGAVesFRbaxr9Bm_XlcfVmg3TiXWR0yK6QS-zBb3Q1M9x1YYjcoMS_H-t1kYA
+MT-Device-ID: 8FFABFDE-71E2-4B1A-80A4-D9A5886F18A5
 MT-Bundle-ID: com.moutai.mall
-Accept-Language: en-CN;q=1, zh-Hans-CN;q=0.9
-MT-Request-ID: 167560018873318465
-MT-APP-Version: 1.3.7
+Accept-Language: zh-Hans-CN;q=1, en-CN;q=0.9
+MT-Request-ID: 171869141138312991
+MT-APP-Version: 1.6.5
 User-Agent: iOS;16.3;Apple;?unrecognized?
 MT-R: clips_OlU6TmFRag5rCXwbNAQ/Tz1SKlN8THcecBp/HGhHdw==
 Content-Length: 93
