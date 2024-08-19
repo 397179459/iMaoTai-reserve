@@ -58,8 +58,10 @@ if __name__ == '__main__':
         location: str = location_select['location']
 
         mobile = input("输入手机号[13812341234]:").strip()
+        # 获取验证码
         process.get_vcode(mobile)
         code = input(f"输入 [{mobile}] 验证码[1234]:").strip()
+        # 登录获取token、userId
         token, userId = process.login(mobile, code)
 
         endDate = input(f"输入 [{mobile}] 截止日期(必须是YYYYMMDD,20230819)，如果不设置截止，请输入9：").strip()
