@@ -246,7 +246,7 @@ def act_params(shop_id: str, item_id: str):
 def send_msg(title, content):
     if config.SCT_TOKEN is None:
         return
-    url = 'https://sctapi.ftqq.com/'+config.PUSH_TOKEN+ '.send'
+    url = f"https://sctapi.ftqq.com/${config.SCT_TOKEN}.send"
     r = requests.get(url, params={
                                   'title': title,
                                   'desp': content})
