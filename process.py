@@ -245,11 +245,12 @@ def act_params(shop_id: str, item_id: str):
 # 消息推送
 def send_msg(title, content):
     if config.SCT_TOKEN is None:
+        logging.info(f'通知推送结果：SCT_TOKEN为空')
         return
-    r = requests.get(f"https://sctapi.ftqq.com/{config.SCT_TOKEN}.send?title={title}&desp={content}")
-    logging.info(f'通知推送结果：{r.code, r.message}')
-
-
+    url = f'https://sctapi.ftqq.com/{config.SCT_TOKEN}.send'
+    r = requests.post(url, {'title': title, 'desp': content})
+    logging.info(f'通知推送结果：{r.status_code, r.text}')
+    
 # 核心代码，执行预约
 def reservation(params: dict, mobile: str):
     params.pop('userId')
