@@ -250,6 +250,7 @@ def send_msg(title, content):
     r = requests.get(url, params={
                                   'title': title,
                                   'desp': content})
+    print(r)
     logging.info(f'通知推送结果：{r.code, r.message}')
 
 
