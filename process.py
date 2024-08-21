@@ -251,7 +251,7 @@ def send_msg(title, content):
                                   'title': title,
                                   'desp': content})
     print(r)
-    logging.info(f'通知推送结果：{r.code, r.message}')
+    #logging.info(f'通知推送结果：{r.code, r.message}')
 
 
 # 核心代码，执行预约
