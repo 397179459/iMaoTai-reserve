@@ -21,6 +21,7 @@ push plus 微信推送,具体使用参考  https://www.pushplus.plus
 # PUSH_TOKEN = os.environ.get("PUSHPLUS_KEY")
 PUSH_TOKEN= '141aed6f7db14419a86c27d87d00ed30'
 
+SCT_TOKEN='SCT74162ThNwl8cpRnueRGBbvKzTlK06q'
 '''
 *********** 地图配置 ***********
 获取地点信息,这里用的高德api,需要自己去高德开发者平台申请自己的key
