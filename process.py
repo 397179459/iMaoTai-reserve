@@ -246,10 +246,8 @@ def act_params(shop_id: str, item_id: str):
 def send_msg(title, content):
     if config.PUSH_TOKEN is None:
         return
-    url = 'http://www.pushplus.plus/send'
-    r = requests.get(url, params={'token': config.PUSH_TOKEN,
-                                  'title': title,
-                                  'content': content})
+    url = f'https://sctapi.ftqq.com/{config.PUSH_TOKEN}.send'
+    r = requests.post(url, data={'text': title, 'desc': content})
     logging.info(f'通知推送结果：{r.status_code, r.text}')
 
 
