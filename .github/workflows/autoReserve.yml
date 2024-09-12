@@ -35,7 +35,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install requests==2.27.1
-          pip install urllib3==1.25.11
       #          pip install pycryptodome requests beautifulsoup4
 
       - name: Cache pip
