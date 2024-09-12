@@ -99,7 +99,7 @@ def get_vcode(mobile: str):
     md5 = signature(params)
     dict.update(params, {'md5': md5, "timestamp": CURRENT_TIME, 'MT-APP-Version': mt_version})
     responses = requests.post("https://app.moutai519.com.cn/xhr/front/user/register/vcode", json=params,
-                              headers=headers, verify=False)
+                              headers=headers)
     if responses.status_code != 200:
         logging.info(
             f'get v_code : params : {params}, response code : {responses.status_code}, response body : {responses.text}')
@@ -126,7 +126,7 @@ def get_current_session_id():
     day_time = int(time.mktime(datetime.date.today().timetuple())) * 1000
     my_url = f"https://static.moutai519.com.cn/mt-backend/xhr/front/mall/index/session/get/{day_time}"
     # print(my_url)
-    responses = requests.get(my_url, verify=False)
+    responses = requests.get(my_url)
     # print(responses.json())
     if responses.status_code != 200:
         logging.warning(
@@ -146,7 +146,7 @@ def get_location_count(province: str,
     day_time = int(time.mktime(datetime.date.today().timetuple())) * 1000
     session_id = headers['current_session_id']
     responses = requests.get(
-        f"https://static.moutai519.com.cn/mt-backend/xhr/front/mall/shop/list/slim/v3/{session_id}/{province}/{item_code}/{day_time}", verify=False)
+        f"https://static.moutai519.com.cn/mt-backend/xhr/front/mall/shop/list/slim/v3/{session_id}/{province}/{item_code}/{day_time}",)
     if responses.status_code != 200:
         logging.warning(
             f'get_location_count : params : {day_time}, response code : {responses.status_code}, response body : {responses.text}')
