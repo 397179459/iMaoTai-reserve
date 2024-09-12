@@ -44,28 +44,25 @@ mt_version = json.loads(requests.get('https://itunes.apple.com/cn/lookup?id=1600
 
 
 header_context = f'''
-MT-Lat: 28.499562
-MT-K: 1675213490331
-MT-Lng: 102.182324
-Host: app.moutai519.com.cn
+MT-Network-Type: --||4G
+User-Agent: iOS;17.6.1;Apple;?unrecognized?
+MT-Token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJtdCIsImV4cCI6MTcyODYzOTI5MSwidXNlcklkIjoxMDUxODkyNjQwLCJkZXZpY2VJZCI6IjY3ODBGMTU1LUY3NjEtNEU3Ni1CNzE2LTUyNDMwM0Q4NzU3NCIsImlhdCI6MTcyNjA0NzI5MX0.OTU0EX2_sUsY5JMsrhpRxjsYDp5J7hDO5-SNwpK4D04
+MT-V: 560c043362ce05b6ed1e1fb6e8u
 MT-User-Tag: 0
-Accept: */*
-MT-Network-Type: WIFI
-MT-Token: 1
-MT-Team-ID: 
-MT-Info: 028e7f96f6369cafe1d105579c5b9377
-MT-Device-ID: 2F2075D0-B66C-4287-A903-DBFF6358342A
-MT-Bundle-ID: com.moutai.mall
-Accept-Language: en-CN;q=1, zh-Hans-CN;q=0.9
-MT-Request-ID: 167560018873318465
-MT-APP-Version: 1.3.7
-User-Agent: iOS;16.3;Apple;?unrecognized?
 MT-R: clips_OlU6TmFRag5rCXwbNAQ/Tz1SKlN8THcecBp/HGhHdw==
-Content-Length: 93
-Accept-Encoding: gzip, deflate, br
+MT-K: 1726099492624
+Content-Length: 67
 Connection: keep-alive
+MT-Team-ID: 
+MT-APP-Version: 1.7.1
+MT-Request-ID: 172609949262448129
+Accept-Language: zh-Hans;q=1, zh-Hans-US;q=0.9, en-CN;q=0.8
+MT-Device-ID: 6780F155-F761-4E76-B716-524303D87574
+Accept: */*
 Content-Type: application/json
-userId: 2
+Accept-Encoding: gzip, deflate, br
+MT-Bundle-ID: com.moutai.mall
+BS-DVID: 31bTphx_LzKePKYUYJ21t1yJm30CovqVDLw3iYJ9fefCs61S876gB_lTjIoUAOF5iA5qWgcQjyMtJvxio4c4B7Q
 '''
 
 
