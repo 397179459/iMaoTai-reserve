@@ -19,5 +19,3 @@ jobs:
           response=$(curl -s -X GET 'https://api.example.com/data' -H 'accept: application/json')
           echo "response=$response" >> $GITHUB_ENV
 
-      - name: Output API Response
-        run: echo "API Response: $response"
