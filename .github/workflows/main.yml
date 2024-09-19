@@ -1,0 +1,23 @@
+name: API Request Workflow
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  make-api-request:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Make API Request
+        id: api_request
+        run: |
+          response=$(curl -s -X GET 'https://api.example.com/data' -H 'accept: application/json')
+          echo "::set-output name=response::$response"
+
+      - name: Output API Response
+        run: echo "API Response: ${{ steps.api_request.outputs.response }}"
