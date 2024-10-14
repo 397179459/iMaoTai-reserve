@@ -105,6 +105,7 @@ if __name__ == '__main__':
         if encrypt_mobile in sections:
             print(f'[{mobile}] 已存在，将运行更新程序')
             change_flag = False
+            initHeader_flag = False
 
             if get_user_yn_confirm(f"是否需要修改 [{mobile}] 截止时间，[y/n]，默认不修改[n]:"):
                 enddate = get_cfg_enddate(mobile)
@@ -118,6 +119,7 @@ if __name__ == '__main__':
 
             if get_user_yn_confirm(f"是否需要修改 [{mobile}] 预约位置，[y/n]，默认不修改[n]:"):
                 province, city, location = get_cfg_location()
+                initHeader_flag = True
 
                 config.set(encrypt_mobile, 'province', province)
                 config.set(encrypt_mobile, 'city', city)
@@ -130,6 +132,8 @@ if __name__ == '__main__':
                 print(f"不修改 [{mobile}] 预约位置")
 
             if get_user_yn_confirm(f"是否需要修改 [{mobile}] token和userid，[y/n]，默认不修改[n]:"):
+                if not initHeader_flag:
+                    process.init_headers()
                 token, userid = get_cfg_token_userid(mobile)
                 encrypt_userid = privateCrypt.encrypt_aes_ecb(str(userid), aes_key)
 
