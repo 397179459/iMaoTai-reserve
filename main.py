@@ -6,6 +6,7 @@ import config
 import login
 import process
 import privateCrypt
+import send_message
 
 DATE_FORMAT = "%m/%d/%Y %H:%M:%S %p"
 TODAY = datetime.date.today().strftime("%Y%m%d")
@@ -82,4 +83,4 @@ for section in configs.sections():
         logging.error(e)
 
 # 推送消息
-process.send_msg(s_title, s_content)
+send_message.send_server_chan(config.SCKEY, s_title, s_content)
