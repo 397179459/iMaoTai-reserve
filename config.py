@@ -21,6 +21,9 @@ push plus 微信推送,具体使用参考  https://www.pushplus.plus
 '''
 PUSH_TOKEN = os.environ.get("PUSHPLUS_KEY")
 
+# server酱 微信推送。使用参考 https://sct.ftqq.com/
+SCKEY = os.environ.get('SCKEY')
+
 
 '''
 *********** 地图配置 ***********
